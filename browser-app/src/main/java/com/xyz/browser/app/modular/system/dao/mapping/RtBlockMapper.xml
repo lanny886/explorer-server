@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.system.dao.RtBlockMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xyz.browser.app.modular.system.model.RtBlock">
+        <id column="number" property="number" />
+        <result column="miner" property="miner" />
+        <result column="reward" property="reward" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        number, miner, reward
+    </sql>
+
+    <select id="pageList" parameterType="map" resultType="com.xyz.browser.app.modular.system.model.RtBlock">
+        select a.* from b_rt_block a
+        inner join(
+        select number from b_rt_block
+        order by number desc limit #{offset},#{limit}
+        ) b on a.number = b.number
+
+    </select>
+    <select id="pageCount" parameterType="map" resultType="long">
+        select count(1) from b_rt_block
+    </select>
+
+</mapper>

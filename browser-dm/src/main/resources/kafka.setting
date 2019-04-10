@@ -1,0 +1,3 @@
+bootstrapServers = localhost:9092
+groupId = kafka_consumer_browser
+topic = VNS

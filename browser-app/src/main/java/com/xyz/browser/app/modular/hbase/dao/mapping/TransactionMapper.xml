@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.hbase.dao.TransactionMapper">
+
+    <sql id="Base_Column_List">
+        transactionHash AS transactionHash,
+        blockHash,
+        blockNumber,
+        contractAddress,
+        cumulativeGasUsed,
+        tfrom AS "from",
+        gasUsed,
+        logs,
+        logsBloom,
+        status,
+        tto AS "to",
+        transactionIndex
+    </sql>
+    <sql id="Base_Column_List2">
+        contractAddress,
+        tto AS "to"
+    </sql>
+    <select id="selectByHash" resultType="com.xyz.browser.app.modular.hbase.model.Transaction">
+        select
+        <include refid="Base_Column_List" />
+        from vns.transaction
+        <where>
+            transactionHash = '${_parameter}'
+        </where>
+    </select>
+    <select id="selectByBlockNumber" resultType="com.xyz.browser.app.modular.hbase.model.Transaction">
+        select
+        <include refid="Base_Column_List2" />
+        from vns.transaction
+        <where>
+            blockNumber = '${_parameter}'
+        </where>
+    </select>
+
+
+</mapper>

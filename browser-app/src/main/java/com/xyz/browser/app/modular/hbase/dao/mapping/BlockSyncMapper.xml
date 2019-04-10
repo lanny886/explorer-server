@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.hbase.dao.BlockSyncMapper">
+
+    <!--&lt;!&ndash; 通用查询映射结果 &ndash;&gt;-->
+    <!--<resultMap id="BaseResultMap" type="com.xyz.browser.app.modular.hbase.model.Block">-->
+        <!--<id column="id" property="id"/>-->
+        <!--<result column="jsonrpc" property="jsonrpc"/>-->
+    <!--</resultMap>-->
+
+
+    <!--<select id="list" resultMap="BaseResultMap">-->
+        <!--select * from vns.block-->
+    <!--</select>-->
+
+    <delete id="deleteByHash" parameterType="string">
+        delete from vns.block_sync where hash = '${_parameter}'
+    </delete>
+
+    <select id="selectAll" resultType="com.xyz.browser.app.modular.hbase.model.BlockSync">
+        select * from vns.block_sync
+
+    </select>
+
+</mapper>

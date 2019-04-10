@@ -1,0 +1,89 @@
+nohup  /data/install/spark/bin/spark-submit --master spark://fenxi-mrg:7077  --executor-memory 4G --total-executor-cores 4   --class com.xyz.browser.dm.jobs.RawStreaming  --jars /data/browser/jars/spark-streaming-kafka-0-10_2.11-2.0.0.jar,/data/browser/jars/mysql-connector-java-5.1.25.jar,/data/browser/jars/hutool-all-4.5.1.jar,/data/browser/jars/fastjson-1.2.29.jar,/data/browser/jars/kafka-clients-0.10.0.0.jar,/data/browser/jars/phoenix-spark-4.14.1-HBase-1.2.jar,/data/browser/jars/phoenix-core-4.14.1-HBase-1.2.jar,/data/browser/jars/hbase-client-1.2.2.jar,/data/browser/jars/hbase-server-1.2.2.jar,/data/browser/jars/hbase-common-1.2.2.jar,/data/browser/jars/hbase-protocol-1.2.2.jar,/data/browser/jars/htrace-core-3.1.0-incubating.jar,/data/browser/jars/tephra-core-0.14.0-incubating.jar,/data/browser/jars/twill-zookeeper-0.8.0.jar,/data/browser/jars/twill-discovery-api-0.8.0.jar,/data/browser/jars/disruptor-3.3.6.jar,/data/browser/jars/metrics-core-2.2.0.jar,/data/browser/jars/Java-WebSocket-1.4.0.jar,/data/browser/jars/browser-common-1.0-SNAPSHOT.jar /data/browser/browser-dm.jar  >  /dev/null 2>&1 &
+
+bin/queryserver.py start
+
+phoenix
+CREATE TABLE vns.block ( hash VARCHAR not null primary key,
+difficulty VARCHAR,
+extraData VARCHAR,
+gasLimit VARCHAR,
+gasUsed VARCHAR,
+logsBloom VARCHAR,
+miner VARCHAR,
+mixHash VARCHAR,
+nonce VARCHAR,
+number VARCHAR,
+parentHash VARCHAR,
+receiptsRoot VARCHAR,
+sha3Uncles VARCHAR,
+size VARCHAR,
+stateRoot VARCHAR,
+timestamp VARCHAR,
+totalDifficulty VARCHAR,
+transactions VARCHAR,
+transactionsRoot VARCHAR,
+uncles VARCHAR
+);
+
+CREATE TABLE vns.block_sync ( hash VARCHAR not null primary key
+);
+
+CREATE TABLE vns.btransaction ( hash VARCHAR not null primary key,
+blockHash VARCHAR,
+blockNumber VARCHAR,
+tfrom VARCHAR,
+gas VARCHAR,
+gasPrice VARCHAR,
+input VARCHAR,
+nonce VARCHAR,
+tto VARCHAR,
+transactionIndex VARCHAR,
+tvalue VARCHAR,
+v VARCHAR,
+r VARCHAR,
+s VARCHAR,
+timestamp VARCHAR
+);
+
+CREATE TABLE vns.transaction ( transactionHash VARCHAR not null primary key,
+blockHash VARCHAR,
+blockNumber VARCHAR,
+contractAddress VARCHAR,
+cumulativeGasUsed VARCHAR,
+tfrom VARCHAR,
+gasUsed VARCHAR,
+logs VARCHAR,
+logsBloom VARCHAR,
+status VARCHAR,
+tto VARCHAR,
+transactionIndex VARCHAR
+);
+
+CREATE TABLE vns.transaction_sync ( transactionHash VARCHAR not null primary key
+);
+
+CREATE TABLE vns.contract ( hash VARCHAR not null primary key,
+total VARCHAR,
+decimal VARCHAR,
+name VARCHAR,
+symbol VARCHAR,
+asset VARCHAR,
+blockNumber VARCHAR,
+contract VARCHAR,
+tokenStandard VARCHAR,
+tokenAction VARCHAR,
+tfrom VARCHAR,
+tto VARCHAR
+);
+
+
+CREATE TABLE vns.contract_sync ( hash VARCHAR not null primary key
+);
+
+CREATE TABLE vns.err (
+koffset VARCHAR not null primary key,
+k VARCHAR,
+v VARCHAR,
+msg VARCHAR,
+t VARCHAR
+);

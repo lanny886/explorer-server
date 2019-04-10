@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.hbase.dao.BtransactionMapper">
+
+    <sql id="Base_Column_List">
+        hash,
+        blockHash,
+        blockNumber,
+        tfrom AS "from",
+        gas,
+        gasPrice,
+        input,
+        nonce,
+        tto AS "to",
+        transactionIndex,
+        tvalue AS "value",
+        v,
+        r,
+        s,
+        timestamp
+    </sql>
+    <select id="selectByHash" resultType="com.xyz.browser.app.modular.hbase.model.Btransaction">
+        select
+        <include refid="Base_Column_List" />
+        from vns.btransaction
+        <where>
+            hash = '${_parameter}'
+        </where>
+    </select>
+
+    <select id="totalCount" resultType="long">
+        select
+        count(1)
+        from vns.btransaction
+    </select>
+
+    <select id="dailyCount" parameterType="map" resultType="long">
+        select
+        count(1)
+        from vns.btransaction
+        <![CDATA[
+        where timestamp >= #{hexStart} and timestamp <= #{hexEnd}
+        ]]>
+
+
+    </select>
+</mapper>

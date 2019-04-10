@@ -1,0 +1,12 @@
+driver = com.mysql.jdbc.Driver
+url = jdbc:mysql://localhost:3208/browser?rewriteBatchedStatements=true
+user = 111111
+pass = 111111
+
+## 可选配置
+# 是否在日志中显示执行的SQL
+showSql = true
+# 是否格式化显示的SQL
+formatSql = false
+# 是否显示SQL参数
+showParams = true

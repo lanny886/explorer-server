@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.system.dao.IContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xyz.browser.app.modular.system.model.Contract">
+        <id column="hash" property="hash" />
+        <result column="total" property="total" />
+        <result column="decimal" property="decimal" />
+        <result column="symbol" property="symbol" />
+        <result column="asset" property="asset" />
+        <result column="block_number" property="blockNumber" />
+        <result column="contract" property="contract" />
+        <result column="token_standard" property="tokenStandard" />
+        <result column="token_action" property="tokenAction" />
+        <result column="from" property="tfrom" />
+        <result column="to" property="tto" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        hash, total, `decimal`, symbol, asset, block_number, contract, token_standard, token_action, `from`, `to`
+    </sql>
+
+
+    <select id="pageList" parameterType="map" resultType="com.xyz.browser.app.modular.system.model.Contract">
+     select distinct crtc.contract, crtc.name,crtc.symbol,(SELECT count(distinct `to`) FROM c_rt_contract newcrtc WHERE newcrtc.contract = crtc.contract) holders
+      from c_rt_contract crtc limit #{offset},#{limit}
+    </select>
+
+    <select id="pageCount" parameterType="map" resultType="long">
+      select count(distinct contract) from c_rt_contract
+    </select>
+
+    <select id="transfersPageList" parameterType="map" resultType="com.xyz.browser.app.modular.system.model.Contract">
+      select crtc.`hash`, crtc.`from` as tfrom, crtc.`to` as tto, conv(crtc.total/(power(10,crtc.`decimal`)),16,10) quantity, crtc.total, crtc.`decimal`,brb.t  FROM
+      c_rt_contract crtc LEFT JOIN b_rt_block brb ON brb.number = conv(crtc.block_number,16,10) where token_action = "transfer" and  contract =#{contract} limit #{offset},#{limit}
+    </select>
+
+    <select id="transfersPageCount" parameterType="map" resultType="long">
+      select count(0) FROM c_rt_contract where contract =#{contract} and token_action = "transfer"
+    </select>
+
+    <select id="info" parameterType="java.lang.String" resultType="com.xyz.browser.app.modular.api.vo.ContractInfoVo">
+            select (SELECT total FROM c_rt_contract where contract =#{contract} AND token_action= "create") total,
+              (select count(DISTINCT `from`) from (
+            (SELECT distinct `from` FROM c_rt_contract where contract =#{contract}
+            UNION  ALL
+            SELECT distinct `to` FROM c_rt_contract where contract =#{contract})) fromAndTo) holders,
+             (SELECT count(`hash`) FROM c_rt_contract WHERE  contract =#{contract} AND token_action= "transfer" ) transfers,
+            contract,`decimal`, name, symbol FROM c_rt_contract where contract =#{contract} AND token_action= "create"
+    </select>
+
+    <select id="selectOverview" parameterType="java.lang.String" resultType="com.xyz.browser.app.modular.system.model.Contract">
+      select contract,`decimal` FROM c_rt_contract where `name` =#{name} ORDER BY id desc LIMIT 1,1
+    </select>
+</mapper>

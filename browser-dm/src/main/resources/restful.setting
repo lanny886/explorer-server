@@ -1,0 +1,2 @@
+blockUrl = http://localhost:8081/api/vns/block/commit
+txnUrl = http://localhost:8081/api/vns/txn/commit

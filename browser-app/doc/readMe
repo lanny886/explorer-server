@@ -1,0 +1,60 @@
+初始密碼：
+admin,111111
+
+
+数据全量同步
+CREATE TABLE `b_rt_block` (
+  `number` bigint(20) NOT NULL,
+  `miner` varchar(255) DEFAULT '',
+  `reward` varchar(255) DEFAULT '',
+  `t` varchar(255) DEFAULT '',
+  `txn_count` varchar(255) DEFAULT '',
+  `uncle_count` varchar(255) DEFAULT '',
+  `gas_used` varchar(255) DEFAULT '',
+  `gas_limit` varchar(255) DEFAULT '',
+  `avg_gas_price` varchar(255) DEFAULT '',
+  `hash` varchar(255) NOT NULL DEFAULT ''
+-- ,
+--   PRIMARY KEY (`hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+CREATE TABLE `b_rt_uncle` (
+  `number` bigint(20) DEFAULT NULL,
+  `block_number` bigint(20) DEFAULT NULL,
+  `miner` varchar(255) DEFAULT '',
+  `reward` varchar(255) DEFAULT '',
+  `t` varchar(255) DEFAULT '',
+  `hash` varchar(255) NOT NULL DEFAULT ''
+-- ,
+--   PRIMARY KEY (`hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `t_rt_txn` (
+  `hash` varchar(255) NOT NULL DEFAULT '',
+  `block_number` bigint(20) DEFAULT NULL,
+  `from` varchar(255) DEFAULT '',
+  `to` varchar(255) DEFAULT '',
+  `value` varchar(255) DEFAULT '',
+  `t` varchar(255) DEFAULT '',
+  `txn_fee` varchar(255) DEFAULT '',
+  `status` varchar(255) DEFAULT '',
+  `block_hash` varchar(255) DEFAULT ''
+-- ,
+--   PRIMARY KEY (`hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+alter table b_rt_block add primary key (`hash`);
+create index index1 on b_rt_block(`miner`);
+create index index2 on b_rt_block(`number`);
+alter table b_rt_uncle add primary key (`hash`);
+create index index1 on b_rt_uncle(miner);
+alter table t_rt_txn add primary key (`hash`);
+create index index1 on t_rt_txn(t);
+create index index3 on t_rt_txn(`from`);
+create index index4 on t_rt_txn(`to`);
+create index index2 on t_rt_txn(block_hash);
+create index index5 on t_rt_txn(`status`);

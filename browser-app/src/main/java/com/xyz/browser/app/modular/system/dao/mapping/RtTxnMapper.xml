@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.system.dao.RtTxnMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xyz.browser.app.modular.system.model.RtTxn">
+        <id column="hash" property="hash" />
+        <result column="from" property="from" />
+        <result column="to" property="to" />
+        <result column="value" property="value" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        hash, from, to, value
+    </sql>
+
+
+    <select id="pageList" parameterType="map" resultType="com.xyz.browser.app.modular.system.model.RtTxn">
+        select a.* from t_rt_txn a
+        inner join(
+        select hash from t_rt_txn
+        where 1=1
+        <if test="block_hash != null and block_hash !=''"> and block_hash=#{block_hash} </if>
+        <if test="status != null and status !=''"> and status=#{status} </if>
+        <if test="from != null and from !=''"> and `from`=#{from} </if>
+        <if test="to != null and to !=''"> and `to`=#{to} </if>
+        <if test="address != null and address !=''"> and (`from`=#{address} or `to`=#{address}) </if>
+
+        order by t desc limit #{offset},#{limit}
+        ) b on a.hash = b.hash
+
+    </select>
+    <select id="pageCount" parameterType="map" resultType="long">
+        select count(1) from t_rt_txn
+        where 1=1
+        <if test="block_hash != null and block_hash !=''"> and block_hash=#{block_hash} </if>
+        <if test="status != null and status !=''"> and status=#{status} </if>
+        <if test="from != null and from !=''"> and `from`=#{from} </if>
+        <if test="to != null and to !=''"> and `to`=#{to} </if>
+        <if test="address != null and address !=''"> and (`from`=#{address} or `to`=#{address}) </if>
+
+    </select>
+
+    <select id="out" parameterType="string" resultType="com.xyz.browser.app.modular.system.model.RtTxn">
+        select sum(`value`) `value`,sum(txn_fee) txn_fee from t_rt_txn
+        where `from` = '${_parameter}' and `status` = '1'
+    </select>
+    <select id="in" parameterType="string" resultType="com.xyz.browser.app.modular.system.model.RtTxn">
+        select sum(`value`) `value` from t_rt_txn
+        where `to` = '${_parameter}' and `status` = '1'
+    </select>
+</mapper>

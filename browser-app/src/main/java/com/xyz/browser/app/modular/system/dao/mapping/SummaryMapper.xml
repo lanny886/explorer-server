@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.system.dao.SummaryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xyz.browser.app.modular.system.model.Summary">
+        <result column="price" property="price" />
+        <result column="latest_block" property="latestBlock" />
+        <result column="avg_block_time" property="avgBlockTime" />
+        <result column="ttc" property="ttc" />
+        <result column="tps" property="tps" />
+        <result column="market_cap" property="marketCap" />
+        <result column="difficulty" property="difficulty" />
+        <result column="avg_hash_rate" property="avgHashRate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        price, latest_block, avg_block_time, ttc, tps, market_cap, difficulty, avg_hash_rate
+    </sql>
+
+    <update id = "upt" parameterType="com.xyz.browser.app.modular.system.model.Summary">
+        update s_summary
+        <trim prefix="set" suffixOverrides=",">
+            <if test="price != null and price !=''">price=#{price},</if>
+            <if test="exchangeRate != null and exchangeRate !=''">exchange_rate=#{exchangeRate},</if>
+            <if test="upDown != null and upDown !=''">up_down=#{upDown},</if>
+            <if test="latestBlock != null and latestBlock !=''">latest_block=#{latestBlock},</if>
+            <if test="avgBlockTime != null and avgBlockTime !=''">avg_block_time=#{avgBlockTime},</if>
+            <if test="ttc != null and ttc !=''">ttc=#{ttc},</if>
+            <if test="tps != null and tps !=''">tps=#{tps},</if>
+            <if test="marketCap != null and marketCap !=''">market_cap=#{marketCap},</if>
+            <if test="difficulty != null and difficulty !=''">difficulty=#{difficulty},</if>
+            <if test="avgHashRate != null and avgHashRate !=''">avg_hash_rate=#{avgHashRate},</if>
+
+
+        </trim>
+
+
+    </update>
+
+</mapper>
