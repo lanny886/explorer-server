@@ -20,6 +20,7 @@ import scala.collection.mutable.ArrayBuffer
 //import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.kafka010.{ConsumerStrategies, KafkaUtils, LocationStrategies}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
+
 object RawStreaming {
   val ws_setting = new Setting("ws.setting")
   val restful_setting = new Setting("restful.setting")
@@ -41,7 +42,7 @@ object RawStreaming {
       "bootstrap.servers" -> kafka_setting.getStr("bootstrapServers"),
       "key.deserializer" -> classOf[StringDeserializer],
       "value.deserializer" -> classOf[StringDeserializer],
-      "group.id" -> kafka_setting.getStr("kafka_consumer_browser"),
+      "group.id" -> kafka_setting.getStr("groupId"),
       "auto.offset.reset" -> "latest",
       "enable.auto.commit" -> (false: java.lang.Boolean)
     )
@@ -209,7 +210,9 @@ object RawStreaming {
         rtTxnDto
       }).collect()
 
-
+      records.unpersist()
+      blocks.unpersist()
+      trans.unpersist()
       /*val contract = contracts.select("total","decimal","name","symbol","asset","hash","blockNumber","contract","tokenStandard","tokenAction","tfrom","tto").rdd.map(r=>{
         val total = r.getAs[String]("total")
         val decimal = r.getAs[String]("decimal")
