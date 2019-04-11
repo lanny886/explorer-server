@@ -58,7 +58,7 @@ object AddressTransactionV {
       .withColumnRenamed("value","iv")
       .groupBy("address").agg(sum("iv").as("iv"))
 
-    val transactionVolume = in union out.map(f=>{
+    val transactionVolume = in.join(out,Seq("address"),"outer").map(f=>{
         val address = f.getAs[String]("address")
         var ov = f.getAs[java.math.BigDecimal]("ov")
         if(ov ==null)
