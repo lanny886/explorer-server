@@ -37,21 +37,20 @@ object AddressTransactionV {
       .option("zkUrl", zkUrl)
       .load()
 
+    import ss.implicits._
 
-    val btxns = df.select("tfrom","tto", "tvalue")
-      .map(f=>{
+    val btxns = df.select("tfrom","tto", "tvalue").map(f=>{
         val from = f.getAs[String]("tfrom")
         val to = f.getAs[String]("tto")
         val value = new java.math.BigDecimal(new java.math.BigInteger(f.getAs[String]("tvalue").substring(2), 16).toString).divide(new BigDecimal("1000000000000000000"))
         (from,to,value)
-      }).toDF("from","to","value")
+    }).toDF("from","to","value")
 
     val out = btxns.select("from","value").map(f=>{
       val address = f.getAs[String]("from")
       val value = f.getAs[java.math.BigDecimal]("value")
       (address,value)
-    }).toDF("address","ov")
-      .groupBy("address").agg(sum("ov").as("ov"))
+    }).toDF("address","ov").groupBy("address").agg(sum("ov").as("ov"))
 
     val in = btxns.select("to","value")
       .withColumnRenamed("to","address")
