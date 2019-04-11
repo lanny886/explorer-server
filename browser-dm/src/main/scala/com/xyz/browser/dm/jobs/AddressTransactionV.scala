@@ -2,7 +2,6 @@ package com.xyz.browser.dm.jobs
 
 import java.math.BigDecimal
 
-import cn.hutool.db.Entity
 import cn.hutool.setting.Setting
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.{SparkConf, SparkContext}
