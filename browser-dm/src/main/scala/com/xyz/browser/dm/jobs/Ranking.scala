@@ -171,9 +171,9 @@ object Ranking {
 
     val ranking_miner = minerRanking.map(f=>{
       val address = f.getAs[String]("address")
-      val blockReward = f.getAs[java.math.BigDecimal]("blockReward").toString
-      val uncleReward = f.getAs[java.math.BigDecimal]("uncleReward").toString
-      val totalReward = f.getAs[java.math.BigDecimal]("totalReward").toString
+      val blockReward = f.getAs[java.math.BigDecimal]("blockReward").toBigInteger.toString
+      val uncleReward = f.getAs[java.math.BigDecimal]("uncleReward").toBigInteger.toString
+      val totalReward = f.getAs[java.math.BigDecimal]("totalReward").toBigInteger.toString
       Entity.create("s_ranking_miner")
         .set("address",address)
         .set("block_reward",blockReward)
