@@ -14,5 +14,6 @@ public class AddressVo {
     private String txnCount;
     private String minedBlocks;
     private String minedUncles;
+    private String volume;
 //    private List<AddressLatestTxnVo> latestTxns;
 }
