@@ -9,6 +9,7 @@ import com.xyz.browser.common.model.websocket.InMessage
 import com.xyz.browser.common.model.{RtBlockDto, RtTxnDto}
 import com.xyz.browser.dm.entity._
 import com.xyz.browser.dm.util.WebSocketUtil
+import org.apache.commons.lang3.StringUtils
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{SaveMode, SparkSession}
@@ -37,7 +38,11 @@ object RawStreaming {
 
     val ssc = new StreamingContext(sparkConf, Seconds(30))
 
-    val topics = Array(kafka_setting.getStr("topic"))
+    val topicVns = kafka_setting.getStr("topicVns")
+    val topicContract = kafka_setting.getStr("topicContract")
+    val topicBancor = kafka_setting.getStr("topicBancor")
+
+    val topics = Array(topicVns,topicContract,topicBancor)
     val kafkaParams = Map[String, Object](
       "bootstrap.servers" -> kafka_setting.getStr("bootstrapServers"),
       "key.deserializer" -> classOf[StringDeserializer],
@@ -72,34 +77,39 @@ object RawStreaming {
 //      val osrs = Array[OffsetRange](OffsetRange(topics(0),0,2380779L,2380779L))
 
       val records = rdd.flatMap(r => {
+        val topic = r.topic()
+        val partition = r.partition().toString
         val key = r.key()
         val log = r.value()
         val offset = r.offset();
+
         var result:List[Record]=null
         try {
-            val obj = JSON.parseObject(log);
+          val obj = JSON.parseObject(log);
+          if(topicVns.equals(topic)){
             val resultObj = obj.getJSONObject("result")
             if(resultObj!=null){
               if (resultObj.containsKey("hash")) {//block
                 result =  parseBlock(resultObj).toList
               } else if (resultObj.containsKey("transactionHash")) {//transaction
                 result = parseTransaction(resultObj)::Nil
-              }else {
-                result = Err(offset.toString,key,log, "unknow type",System.currentTimeMillis().toString) :: Nil
               }
-            }else{
-              if(obj.containsKey("contract"))//contract
-                result = parseContract(obj)::Nil
             }
+          }else if(topicContract.equals(topic)){
+            if(obj.containsKey("contract"))//contract
+              result = parseContract(obj)::Nil
+          }else if(topicBancor.equals(topic)){
+              result = parseBancor(obj)::Nil
+          }
 
         }catch{
           case e: Exception =>
             println("err occur:"+e.getMessage)
             e.printStackTrace()
-            result = Err(offset.toString,key,log, e.getMessage,System.currentTimeMillis().toString) :: Nil
+            result = Err(topic,partition,offset.toString,key,log, e.getMessage,System.currentTimeMillis().toString) :: Nil
         }
         if(result == null){
-          result = Err(offset.toString,key,log, "unknow type",System.currentTimeMillis().toString) :: Nil
+          result = Err(topic,partition,offset.toString,key,log, "unknow type",System.currentTimeMillis().toString) :: Nil
         }
         result
       })
@@ -141,11 +151,20 @@ object RawStreaming {
         .options(Map("table" -> (phoenix_setting.getStr("phoenixSchem")+".contract"), "zkUrl" -> phoenix_setting.getStr("zkUrl")))
         .save()
 
+      val bancors = records.filter(_.isInstanceOf[Bancor]).map(_.asInstanceOf[Bancor]).toDF()
+      bancors.write
+        .format("org.apache.phoenix.spark")
+        .mode(SaveMode.Overwrite)
+        .options(Map("table" -> (phoenix_setting.getStr("phoenixSchem")+".bancor"), "zkUrl" -> phoenix_setting.getStr("zkUrl")))
+        .save()
+
+
+
       val errors = records.filter(_.isInstanceOf[Err]).map(_.asInstanceOf[Err]).toDF
       errors.write
         .format("org.apache.phoenix.spark")
         .mode(SaveMode.Overwrite)
-        .options(Map("table" -> (phoenix_setting.getStr("phoenixSchem")+".err"), "zkUrl" -> phoenix_setting.getStr("zkUrl")))
+        .options(Map("table" -> (phoenix_setting.getStr("phoenixSchem")+".err2"), "zkUrl" -> phoenix_setting.getStr("zkUrl")))
         .save()
 
 
@@ -515,6 +534,39 @@ object RawStreaming {
       tokenAction ,
       tfrom ,
       tto
+    )
+
+  }
+  def parseBancor(obj:JSONObject):Record={
+    val hash = obj.getString("hash")
+    val tfrom = obj.getString("from")
+    val contract = obj.getString("contract")
+    val action = obj.getString("action")
+    val ttype = obj.getInteger("type").toString
+    var name:String = null
+    var tfunction:String = null
+    var param:String = null
+    var input:String = null
+    if("create".equals(action)){
+      name = obj.getString("name")
+    }else if("run".equals(action)){
+      name = obj.getString("name")
+      tfunction = obj.getString("function")
+      val pa = obj.getJSONArray("param")
+      param = if(pa!=null) pa.toJSONString else null
+      input = obj.getString("input")
+    }
+
+    Bancor(
+      hash ,
+      tfrom ,
+      contract ,
+      action ,
+      ttype ,
+      name ,
+      tfunction ,
+      param ,
+      input
     )
 
   }
