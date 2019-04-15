@@ -98,6 +98,9 @@ object RawStreaming {
             e.printStackTrace()
             result = Err(offset.toString,key,log, e.getMessage,System.currentTimeMillis().toString) :: Nil
         }
+        if(result == null){
+          result = Err(offset.toString,key,log, "unknow type",System.currentTimeMillis().toString) :: Nil
+        }
         result
       })
 

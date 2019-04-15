@@ -32,8 +32,8 @@ public class CheckLost {
         // like java.lang.AssertionError: assertion failed: Failed to get records for spark-executor-kafka_consumer_browser VNS 0 5293938 after polling for 10000
         //
 //        1686041
-        long offsetStart=5316218;//(include)
-        long offsetEnd=5316224;//(exclude)
+        long offsetStart=41143;//(include)
+        long offsetEnd=41162;//(exclude)
 
         //Kafka consumer configuration settings
         String topicName = kafka_setting.getStr("topic");
@@ -65,7 +65,7 @@ public class CheckLost {
                 if(record.offset()>=offsetEnd)
                      break b1;
                 String value = record.value().toString();
-//                System.out.println(value);
+                System.out.println(value);
                 losts.add(value);
 
                 JSONObject obj = JSON.parseObject(value);

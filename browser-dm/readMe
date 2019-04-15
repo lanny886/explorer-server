@@ -87,3 +87,8 @@ v VARCHAR,
 msg VARCHAR,
 t VARCHAR
 );
+
+CREATE TABLE vns.address_transaction (
+address VARCHAR not null primary key,
+volume VARCHAR
+);
