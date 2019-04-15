@@ -1,7 +1,7 @@
 # explorer-server
 The project contains interface and analysis jobs for VNS blockchain explorer
 
-## three module
+## three modules
 ### browser-app
 springboot module，provide interfaces
 ### browser-common

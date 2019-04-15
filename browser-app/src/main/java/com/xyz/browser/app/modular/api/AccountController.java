@@ -37,7 +37,9 @@ import com.xyz.browser.app.core.util.JwtTokenUtil;
 import com.xyz.browser.app.modular.api.dto.PasswordDto;
 import com.xyz.browser.app.modular.api.vo.AddressLatestTxnVo;
 import com.xyz.browser.app.modular.api.vo.AddressVo;
+import com.xyz.browser.app.modular.hbase.model.AddressTransaction;
 import com.xyz.browser.app.modular.hbase.model.Block;
+import com.xyz.browser.app.modular.hbase.service.AddressTransactionService;
 import com.xyz.browser.app.modular.hbase.service.BlockService;
 import com.xyz.browser.app.modular.system.model.RtBlock;
 import com.xyz.browser.app.modular.system.model.RtTxn;
@@ -95,6 +97,8 @@ public class AccountController extends BaseController {
     private IRtTxnService rtTxnService;
     @Autowired
     private IRtUncleService rtUncleService;
+    @Autowired
+    private AddressTransactionService addressTransactionService;
 
 
 
@@ -119,6 +123,8 @@ public class AccountController extends BaseController {
         Map<String, Object> params = Maps.newHashMap();
         params.put("address", address);
         long txnCount = rtTxnService.pageCount(params);
+        AddressTransaction addressTransaction = addressTransactionService.selectByAddress(address);
+        addressVo.setVolume(addressTransaction.getVolume());
 //        params.put("offset",0);
 //        params.put("limit",25);
 //        List<RtTxn> rtTxns = rtTxnService.pageList(params);
