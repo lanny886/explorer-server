@@ -1,0 +1,8 @@
+driver = com.mysql.jdbc.Driver
+url = jdbc:mysql://localhost:3208/browser_addr?rewriteBatchedStatements=true
+user = 111111
+pass = 111111
+
+#read only
+#user = 111111
+#pass = 111111
