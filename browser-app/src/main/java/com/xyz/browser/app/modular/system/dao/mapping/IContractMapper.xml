@@ -28,6 +28,19 @@
       from c_rt_contract crtc limit #{offset},#{limit}
     </select>
 
+    <select id="selectList" parameterType="map" resultType="com.xyz.browser.app.modular.api.vo.ContractSearchVo">
+     select distinct crtc.contract, crtc.name, crtc.symbol, "address" as type
+      from c_rt_contract crtc
+      <where>
+          <if test="name != null">
+              name LIKE concat(concat('%',#{name}),'%')
+          </if>
+          <if test="symbol != null">
+              and symbol LIKE concat(concat('%',#{symbol}),'%')
+          </if>
+      </where>
+    </select>
+
     <select id="pageCount" parameterType="map" resultType="long">
       select count(distinct contract) from c_rt_contract
     </select>

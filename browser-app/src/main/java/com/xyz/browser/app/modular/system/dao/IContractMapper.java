@@ -2,6 +2,7 @@ package com.xyz.browser.app.modular.system.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.xyz.browser.app.modular.api.vo.ContractInfoVo;
+import com.xyz.browser.app.modular.api.vo.ContractSearchVo;
 import com.xyz.browser.app.modular.system.model.Contract;
 
 import java.util.List;
@@ -20,5 +21,7 @@ public interface IContractMapper extends BaseMapper<Contract> {
     ContractInfoVo info(String contract);
 
     Contract selectOverview(String hash);
+
+    List<ContractSearchVo> selectList(Map<String,Object> params);
 
 }

@@ -2,6 +2,7 @@ package com.xyz.browser.app.modular.system.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.xyz.browser.app.modular.api.vo.ContractInfoVo;
+import com.xyz.browser.app.modular.api.vo.ContractSearchVo;
 import com.xyz.browser.app.modular.system.dao.IContractMapper;
 import com.xyz.browser.app.modular.system.model.Contract;
 import com.xyz.browser.app.modular.system.service.IContractService;
@@ -50,5 +51,10 @@ public class IContractServiceImpl extends ServiceImpl<IContractMapper, Contract>
     @Override
     public Contract selectOverview(String hash) {
         return iContractMapper.selectOverview(hash);
+    }
+
+    @Override
+    public List<ContractSearchVo> selectList(Map<String, Object> params) {
+        return iContractMapper.selectList(params);
     }
 }

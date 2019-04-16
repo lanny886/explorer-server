@@ -26,4 +26,8 @@ public interface IRtTxnService extends IService<RtTxn> {
     void updateStatus(RtTxn rtTxn);
 
     String balanceFromOut(String address);
+
+    List<String> selectListByAddress(String address);
+
+
 }

@@ -50,4 +50,14 @@
         select sum(`value`) `value` from t_rt_txn
         where `to` = '${_parameter}' and `status` = '1'
     </select>
+
+
+    <select id="selectListByAddress" parameterType="string" resultType="java.lang.String">
+        SELECT DISTINCT `from` FROM
+        ((select `from` FROM t_rt_txn WHERE `from` LIKE concat(concat('%',#{symbol}),'%') LIMIT 0,10)
+        UNION
+        (select `to` FROM t_rt_txn WHERE `to` LIKE concat(concat('%',#{symbol}),'%') LIMIT 0,10)) address
+    </select>
+
+
 </mapper>
