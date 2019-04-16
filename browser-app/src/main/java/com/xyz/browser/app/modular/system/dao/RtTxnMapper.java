@@ -23,4 +23,6 @@ public interface RtTxnMapper extends BaseMapper<RtTxn> {
     RtTxn out(String address);
 
     RtTxn in(String address);
+
+    List<String> selectListByAddress(String address);
 }

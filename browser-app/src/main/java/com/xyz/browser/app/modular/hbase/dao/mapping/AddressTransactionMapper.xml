@@ -7,7 +7,7 @@
       volume
     </sql>
 
-    <select id="selectByHash" resultType="com.xyz.browser.app.modular.hbase.model.AddressTransaction">
+    <select id="selectByAddress" resultType="com.xyz.browser.app.modular.hbase.model.AddressTransaction">
         select
         <include refid="Base_Column_List" />
         from vns.address_transaction

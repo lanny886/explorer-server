@@ -96,6 +96,11 @@ public class RtTxnServiceImpl extends ServiceImpl<RtTxnMapper, RtTxn> implements
     }
 
     @Override
+    public List<String> selectListByAddress(String address) {
+        return rtTxnMapper.selectListByAddress(address);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateStatus(RtTxn rtTxn) {
         try {

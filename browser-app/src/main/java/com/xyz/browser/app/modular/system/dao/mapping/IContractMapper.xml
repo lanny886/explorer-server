@@ -28,6 +28,19 @@
       from c_rt_contract crtc limit #{offset},#{limit}
     </select>
 
+    <select id="selectList" parameterType="map" resultType="com.xyz.browser.app.modular.api.vo.ContractSearchVo">
+     select distinct crtc.contract, crtc.name, crtc.symbol, "address" as type
+      from c_rt_contract crtc
+      <where>
+          <if test="name != null">
+              name LIKE concat(concat('%',#{name}),'%')
+          </if>
+          <if test="symbol != null">
+              and symbol LIKE concat(concat('%',#{symbol}),'%')
+          </if>
+      </where>
+    </select>
+
     <select id="pageCount" parameterType="map" resultType="long">
       select count(distinct contract) from c_rt_contract
     </select>
@@ -54,4 +67,11 @@
     <select id="selectOverview" parameterType="java.lang.String" resultType="com.xyz.browser.app.modular.system.model.Contract">
       select contract,`decimal` FROM c_rt_contract where `name` =#{name} ORDER BY id desc LIMIT 1,1
     </select>
+
+    <update id="updateContract" parameterType="com.xyz.browser.app.modular.system.model.Contract">
+        update c_rt_contract set total = #{total} where token_action = #{tokenAction} and contract = #{contract}
+    </update>
+
+
+
 </mapper>

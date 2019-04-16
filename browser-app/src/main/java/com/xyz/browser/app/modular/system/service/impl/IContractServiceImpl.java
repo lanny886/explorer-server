@@ -1,11 +1,18 @@
 package com.xyz.browser.app.modular.system.service.impl;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.xyz.browser.app.modular.api.vo.ContractInfoVo;
+import com.xyz.browser.app.modular.api.vo.ContractSearchVo;
 import com.xyz.browser.app.modular.system.dao.IContractMapper;
 import com.xyz.browser.app.modular.system.model.Contract;
 import com.xyz.browser.app.modular.system.service.IContractService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +23,9 @@ public class IContractServiceImpl extends ServiceImpl<IContractMapper, Contract>
 
     @Autowired
     private IContractMapper iContractMapper;
+
+    @Value("${total.url}")
+    private String totalUrl;
 
     @Override
     public void insertRtData(Contract contract) {
@@ -50,5 +60,29 @@ public class IContractServiceImpl extends ServiceImpl<IContractMapper, Contract>
     @Override
     public Contract selectOverview(String hash) {
         return iContractMapper.selectOverview(hash);
+    }
+
+    @Override
+    public List<ContractSearchVo> selectList(Map<String, Object> params) {
+        return iContractMapper.selectList(params);
+    }
+
+    @Override
+    public String getTotal(String contract) {
+        HttpRequest post = HttpUtil.createPost(totalUrl);
+        post.contentType("text/plain");
+        post.body("{\"coin\":\"VNS\",\"contract\":\"" + contract + "\"}");
+        HttpResponse response = post.execute();
+        if (response.getStatus() == 200) {
+            JSONObject obj = JSON.parseObject(response.body());
+            String total = obj.getString("data");
+            return total;
+        }
+        return null;
+    }
+
+    @Override
+    public int updateContract(Contract contract) {
+        return iContractMapper.updateContract(contract);
     }
 }

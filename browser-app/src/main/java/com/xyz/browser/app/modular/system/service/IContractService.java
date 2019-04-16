@@ -2,6 +2,7 @@ package com.xyz.browser.app.modular.system.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.xyz.browser.app.modular.api.vo.ContractInfoVo;
+import com.xyz.browser.app.modular.api.vo.ContractSearchVo;
 import com.xyz.browser.app.modular.system.model.Contract;
 
 import java.util.List;
@@ -23,5 +24,11 @@ public interface IContractService extends IService<Contract> {
     ContractInfoVo info(String contract);
 
     Contract selectOverview(String hash);
+
+    List<ContractSearchVo> selectList(Map<String,Object> params);
+
+    String getTotal(String contract);
+
+    int updateContract(Contract Contract);
 
 }
