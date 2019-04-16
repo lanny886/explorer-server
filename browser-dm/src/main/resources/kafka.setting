@@ -1,3 +1,5 @@
 bootstrapServers = localhost:9092
 groupId = kafka_consumer_browser
-topic = VNS
+topicVns = VNS
+topicContract = VNSContractParse
+topicBancor = VNSBancor

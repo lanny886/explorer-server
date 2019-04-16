@@ -165,6 +165,9 @@ public class TxnController extends BaseController {
     public JsonResult list(@RequestBody TxnPageDto txnPageDto) {
         BigInteger page = new BigInteger(txnPageDto.getPage()).subtract(BigInteger.ONE);
         BigInteger limit = new BigInteger(txnPageDto.getLimit());
+        if(page.intValue()<0 || limit.intValue() > 200){
+            return new JsonResult();
+        }
         BigInteger offset = page.multiply(limit);
         Map<String,Object> params = Maps.newHashMap();
         EntityWrapper ew = new EntityWrapper<RtTxn>();
