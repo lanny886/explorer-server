@@ -1,5 +1,7 @@
 nohup  /data/install/spark/bin/spark-submit --master spark://fenxi-mrg:7077  --executor-memory 4G --total-executor-cores 4   --class com.xyz.browser.dm.jobs.RawStreaming  --jars /data/browser/jars/spark-streaming-kafka-0-10_2.11-2.0.0.jar,/data/browser/jars/mysql-connector-java-5.1.25.jar,/data/browser/jars/hutool-all-4.5.1.jar,/data/browser/jars/fastjson-1.2.29.jar,/data/browser/jars/kafka-clients-0.10.0.0.jar,/data/browser/jars/phoenix-spark-4.14.1-HBase-1.2.jar,/data/browser/jars/phoenix-core-4.14.1-HBase-1.2.jar,/data/browser/jars/hbase-client-1.2.2.jar,/data/browser/jars/hbase-server-1.2.2.jar,/data/browser/jars/hbase-common-1.2.2.jar,/data/browser/jars/hbase-protocol-1.2.2.jar,/data/browser/jars/htrace-core-3.1.0-incubating.jar,/data/browser/jars/tephra-core-0.14.0-incubating.jar,/data/browser/jars/twill-zookeeper-0.8.0.jar,/data/browser/jars/twill-discovery-api-0.8.0.jar,/data/browser/jars/disruptor-3.3.6.jar,/data/browser/jars/metrics-core-2.2.0.jar,/data/browser/jars/Java-WebSocket-1.4.0.jar,/data/browser/jars/browser-common-1.0-SNAPSHOT.jar /data/browser/browser-dm.jar  >  /dev/null 2>&1 &
 
+nohup /data/install/spark/bin/spark-submit --master spark://fenxi-mrg:7077 --executor-memory 4G --total-executor-cores 4 --class com.xyz.browser.dm.jobs.Ranking --jars /data/browser/jars/spark-streaming-kafka-0-10_2.11-2.0.0.jar,/data/browser/jars/mysql-connector-java-5.1.25.jar,/data/browser/jars/hutool-all-4.5.1.jar,/data/browser/jars/fastjson-1.2.29.jar,/data/browser/jars/kafka-clients-0.10.0.0.jar,/data/browser/jars/phoenix-spark-4.14.1-HBase-1.2.jar,/data/browser/jars/phoenix-core-4.14.1-HBase-1.2.jar,/data/browser/jars/hbase-client-1.2.2.jar,/data/browser/jars/hbase-server-1.2.2.jar,/data/browser/jars/hbase-common-1.2.2.jar,/data/browser/jars/hbase-protocol-1.2.2.jar,/data/browser/jars/htrace-core-3.1.0-incubating.jar,/data/browser/jars/tephra-core-0.14.0-incubating.jar,/data/browser/jars/twill-zookeeper-0.8.0.jar,/data/browser/jars/twill-discovery-api-0.8.0.jar,/data/browser/jars/disruptor-3.3.6.jar,/data/browser/jars/metrics-core-2.2.0.jar,/data/browser/jars/Java-WebSocket-1.4.0.jar,/data/browser/jars/browser-common-1.0-SNAPSHOT.jar /data/browser/browser-dm.jar > logs/test.log 2>&1 &
+
 bin/queryserver.py start
 
 phoenix
@@ -87,8 +89,29 @@ v VARCHAR,
 msg VARCHAR,
 t VARCHAR
 );
+CREATE TABLE vns.err2 (
+topic VARCHAR not null,
+partition VARCHAR not null,
+koffset VARCHAR not null,
+k VARCHAR,
+v VARCHAR,
+msg VARCHAR,
+t VARCHAR,
+constraint pk PRIMARY KEY(topic,partition,koffset)
+);
 
 CREATE TABLE vns.address_transaction (
 address VARCHAR not null primary key,
 volume VARCHAR
+);
+
+CREATE TABLE vns.bancor ( hash VARCHAR not null primary key,
+tfrom VARCHAR,
+contract VARCHAR,
+action VARCHAR,
+ttype VARCHAR,
+name VARCHAR,
+tfunction VARCHAR,
+param VARCHAR,
+input VARCHAR
 );
