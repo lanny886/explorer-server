@@ -170,7 +170,7 @@ object Ranking {
       }
     }
     println("req total size:"+list.size)
-    val assetRanking = ss.createDataset(list).toDF("address","asset").orderBy(desc("asset")).head(100)
+    val assetRanking = ss.createDataset(list).toDF("address","asset").orderBy(desc("asset")).head(200)
     val ranking_asset = assetRanking.map(f=>{
       val address = f.getAs[String]("address")
       val asset = f.getAs[java.math.BigDecimal]("asset").toString
@@ -223,7 +223,7 @@ object Ranking {
           ur = java.math.BigDecimal.ZERO;
         val totalReward = br.add(ur)
         (address,br,ur,totalReward)
-      }).toDF("address","blockReward","uncleReward","totalReward").filter(f=>StringUtils.isNotBlank(f.getAs[String]("address"))).orderBy(desc("totalReward")).head(100)
+      }).toDF("address","blockReward","uncleReward","totalReward").filter(f=>StringUtils.isNotBlank(f.getAs[String]("address"))).orderBy(desc("totalReward")).head(200)
 
     val ranking_miner = minerRanking.map(f=>{
       val address = f.getAs[String]("address")
