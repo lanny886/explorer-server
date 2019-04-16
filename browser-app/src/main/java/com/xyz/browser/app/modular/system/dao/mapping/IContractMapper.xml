@@ -67,4 +67,11 @@
     <select id="selectOverview" parameterType="java.lang.String" resultType="com.xyz.browser.app.modular.system.model.Contract">
       select contract,`decimal` FROM c_rt_contract where `name` =#{name} ORDER BY id desc LIMIT 1,1
     </select>
+
+    <update id="updateContract" parameterType="com.xyz.browser.app.modular.system.model.Contract">
+        update c_rt_contract set total = #{total} where token_action = #{tokenAction} and contract = #{contract}
+    </update>
+
+
+
 </mapper>

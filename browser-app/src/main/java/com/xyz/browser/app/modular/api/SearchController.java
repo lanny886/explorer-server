@@ -102,12 +102,21 @@ public class SearchController {
                 params.put("name",searchName);
                 List<ContractSearchVo> contracts = IContractService.selectList(params);
                 List<String> address = rtTxnService.selectListByAddress(searchName);
+                Transaction transaction = transactionService.selectByHash(searchName);
+
                 if (contracts != null && contracts.size() > 0) {
 
                     for(String ad : address){
                         ContractSearchVo adOV = new ContractSearchVo();
                         adOV.setType("address");
                         adOV.setAddress(ad);
+                        contracts.add(adOV);
+                    }
+
+                    if (transaction != null) {
+                        ContractSearchVo adOV = new ContractSearchVo();
+                        adOV.setType("hash");
+                        adOV.setHash(transaction.getTransactionHash());
                         contracts.add(adOV);
                     }
 
@@ -130,6 +139,12 @@ public class SearchController {
                             contractList.add(adOV);
                         }
 
+                        if (transaction != null) {
+                            ContractSearchVo adOV = new ContractSearchVo();
+                            adOV.setType("hash");
+                            adOV.setHash(transaction.getTransactionHash());
+                            contracts.add(adOV);
+                        }
                         Map<String, String> map = Maps.newHashMap();
                         map.put("type", "contract");
                         map.put("value", JSONObject.toJSONString(contractList));
@@ -145,11 +160,32 @@ public class SearchController {
                                 adOV.setAddress(ad);
                                 contractList.add(adOV);
                             }
+
+                            if (transaction != null) {
+                                ContractSearchVo adOV = new ContractSearchVo();
+                                adOV.setType("hash");
+                                adOV.setHash(transaction.getTransactionHash());
+                                contractList.add(adOV);
+                            }
+
                             Map<String, String> map = Maps.newHashMap();
                             map.put("type", "contract");
                             map.put("value", JSONObject.toJSONString(contractList));
 
                             list.add(map);
+                        } else {
+
+                            if (transaction != null) {
+                                ContractSearchVo adOV = new ContractSearchVo();
+                                adOV.setType("hash");
+                                adOV.setHash(transaction.getTransactionHash());
+                                contractList.add(adOV);
+                                Map<String, String> map = Maps.newHashMap();
+                                map.put("type", "contract");
+                                map.put("value", JSONObject.toJSONString(contractList));
+                                list.add(map);
+                            }
+
                         }
 
                     }

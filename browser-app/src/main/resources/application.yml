@@ -29,6 +29,9 @@ guns:
 beetl:
   resource-auto-check: true       #热加载beetl模板，开发时候用
 
+total:
+  url: http://127.0.0.1:8555/getTotal
+  
 spring:
   profiles:
     active: @spring.active@

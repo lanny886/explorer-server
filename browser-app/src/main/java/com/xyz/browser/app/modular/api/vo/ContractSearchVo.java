@@ -12,6 +12,16 @@ public class ContractSearchVo {
 
     private String address;
 
+    private String hash;
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
     public String getToken() {
         return token;
     }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.hbase.dao.BancorMapper">
+
+    <sql id="Base_Column_List">
+      hash,
+      tfrom,
+      contract,
+      action,
+      ttype,
+      name,
+      tfunction,
+      param,
+      input
+    </sql>
+
+    <select id="selectByContract" resultType="com.xyz.browser.app.modular.hbase.model.Bancor">
+        select
+        <include refid="Base_Column_List" />
+        from vns.bancor
+        <where>
+            contract = '${_parameter}'
+        </where>
+    </select>
+
+    <select id="selectBanCor" resultType="com.xyz.browser.app.modular.hbase.model.Bancor">
+        select
+        <include refid="Base_Column_List" />
+        from vns.bancor
+        <where>
+            name = '${_parameter}'
+        </where>
+    </select>
+
+
+</mapper>

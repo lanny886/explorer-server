@@ -27,4 +27,8 @@ public interface IContractService extends IService<Contract> {
 
     List<ContractSearchVo> selectList(Map<String,Object> params);
 
+    String getTotal(String contract);
+
+    int updateContract(Contract Contract);
+
 }

@@ -24,4 +24,6 @@ public interface IContractMapper extends BaseMapper<Contract> {
 
     List<ContractSearchVo> selectList(Map<String,Object> params);
 
+    int updateContract(Contract Contract);
+
 }
