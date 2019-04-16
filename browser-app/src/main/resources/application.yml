@@ -31,7 +31,7 @@ beetl:
 
 total:
   url: http://127.0.0.1:8555/getTotal
-  
+
 spring:
   profiles:
     active: @spring.active@
@@ -110,6 +110,7 @@ guns:
     blockSync: false
     txnStatusSync: false
     keepAlive: false
+    contract: false
 
 redis:
   host: localhost
@@ -145,6 +146,7 @@ guns:
     txnTotalCount: true
     daily: true
     blockSync: true
+    contract: true
 
 redis:
   host: localhost
@@ -191,6 +193,7 @@ guns:
     blockSync: true
     txnStatusSync: true
     keepAlive: true
+    contract: true
 
 redis:
   host: localhost
@@ -232,6 +235,7 @@ guns:
     blockSync: true
     txnStatusSync: true
     keepAlive: true
+    contract: true
 
 #kafka配置
 BOOTSTRAP_SERVERS_CONFIG: localhost:9092
