@@ -183,6 +183,9 @@ public class BlockController extends BaseController {
     public JsonResult list(@RequestBody PageDto pageDto) {
         BigInteger page = new BigInteger(pageDto.getPage()).subtract(BigInteger.ONE);
         BigInteger limit = new BigInteger(pageDto.getLimit());
+        if(page.intValue()<0 || limit.intValue() > 200){
+            return new JsonResult();
+        }
         BigInteger offset = page.multiply(limit);
 
 //        List<RtBlock> rtBlocks = rtBlockService.selectList(new EntityWrapper<RtBlock>().orderBy("number",false).last("limit "+offset.toString()+","+limit.toString()));
