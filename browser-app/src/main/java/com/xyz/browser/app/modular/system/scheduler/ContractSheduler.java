@@ -47,11 +47,7 @@ public class ContractSheduler {
 
     @Scheduled(cron = "30 0/1 * * * *")
     public void work() {
-        boolean lockflag = distributedRedisLock.tryAcquire(RedisLockConstant.BLOCK_SYNC,20);
-
-        if(lockflag) {
-            self.start();
-        }
+        self.start();
     }
     @TimeStat
     public void start(){

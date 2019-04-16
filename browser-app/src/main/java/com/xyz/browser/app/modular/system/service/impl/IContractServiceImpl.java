@@ -24,7 +24,7 @@ public class IContractServiceImpl extends ServiceImpl<IContractMapper, Contract>
     @Autowired
     private IContractMapper iContractMapper;
 
-    @Value("${total.url}")
+    @Value("${guns.inf.total}")
     private String totalUrl;
 
     @Override
