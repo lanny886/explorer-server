@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IRankingAssetService extends IService<RankingAsset> {
 
+    Integer selectRankByAddress(String address);
+
 }

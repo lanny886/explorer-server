@@ -191,7 +191,7 @@ object Ranking {
           ur = java.math.BigDecimal.ZERO;
         val totalReward = br.add(ur)
         (address,br,ur,totalReward)
-      }).toDF("address","blockReward","uncleReward","totalReward").filter(f=>StringUtils.isNotBlank(f.getAs[String]("address"))).orderBy(desc("totalReward")).head(200)
+      }).toDF("address","blockReward","uncleReward","totalReward").filter(f=>StringUtils.isNotBlank(f.getAs[String]("address"))).orderBy(desc("totalReward")).collect()
 
     val ranking_miner = minerRanking.map(f=>{
       val address = f.getAs[String]("address")

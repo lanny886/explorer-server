@@ -15,5 +15,6 @@ public class AddressVo {
     private String minedBlocks;
     private String minedUncles;
     private String volume;
+    private Integer rank;
 //    private List<AddressLatestTxnVo> latestTxns;
 }
