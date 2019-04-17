@@ -170,7 +170,7 @@ object Ranking {
       }
     }
     println("req total size:"+list.size)
-    val assetRanking = ss.createDataset(list).toDF("address","asset").orderBy(desc("asset")).head(200)
+    val assetRanking = ss.createDataset(list).toDF("address","asset").orderBy(desc("asset")).collect()
     val ranking_asset = assetRanking.map(f=>{
       val address = f.getAs[String]("address")
       val asset = f.getAs[java.math.BigDecimal]("asset").toString
