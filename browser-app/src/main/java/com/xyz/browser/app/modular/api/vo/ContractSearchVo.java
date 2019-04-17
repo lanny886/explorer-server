@@ -14,6 +14,26 @@ public class ContractSearchVo {
 
     private String hash;
 
+    private String block;
+
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getBlock() {
+        return block;
+    }
+
+    public void setBlock(String block) {
+        this.block = block;
+    }
+
     public String getHash() {
         return hash;
     }

@@ -99,8 +99,8 @@ public class AccountController extends BaseController {
     private IRtUncleService rtUncleService;
     @Autowired
     private AddressTransactionService addressTransactionService;
-
-
+    @Autowired
+    private IRankingAssetService rankingAssetService;
 
 
     private static CopyOptions co1;
@@ -125,6 +125,9 @@ public class AccountController extends BaseController {
         long txnCount = rtTxnService.pageCount(params);
         AddressTransaction addressTransaction = addressTransactionService.selectByAddress(address);
         addressVo.setVolume(addressTransaction.getVolume());
+        Integer addressRank = rankingAssetService.selectRankByAddress(address);
+        addressVo.setRank(addressRank);
+
 //        params.put("offset",0);
 //        params.put("limit",25);
 //        List<RtTxn> rtTxns = rtTxnService.pageList(params);

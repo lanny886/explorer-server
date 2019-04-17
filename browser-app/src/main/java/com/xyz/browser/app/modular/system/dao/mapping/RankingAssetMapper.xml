@@ -14,4 +14,8 @@
         rank, address, asset
     </sql>
 
+    <select id="selectRankByAddress" parameterType="java.lang.Integer" resultType="java.lang.String">
+      select rank from s_ranking_asset where address = #{address}
+    </select>
+
 </mapper>
