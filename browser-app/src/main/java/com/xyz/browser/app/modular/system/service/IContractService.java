@@ -31,4 +31,6 @@ public interface IContractService extends IService<Contract> {
 
     int updateContract(Contract Contract);
 
+    Contract selectContractByAddress(String contract);
+
 }

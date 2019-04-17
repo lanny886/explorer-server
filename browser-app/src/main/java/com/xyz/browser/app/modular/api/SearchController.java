@@ -1,5 +1,6 @@
 package com.xyz.browser.app.modular.api;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.google.common.collect.Lists;
@@ -44,7 +45,8 @@ public class SearchController {
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public JsonResult search(@RequestBody String searchName) {
         log.info("searchName:"+searchName);
-        List<Map<String,String>> list = Lists.newArrayList();
+//        List<Map<String,String>> list = Lists.newArrayList();
+        JSONArray listjson = new JSONArray();
         if(StringUtils.isNotBlank(searchName)){
             try {
                 Block block = blockService.selectByHash(searchName);
@@ -52,7 +54,7 @@ public class SearchController {
                     Map<String, String> map = Maps.newHashMap();
                     map.put("type", "block");
                     map.put("value", block.getHash());
-                    list.add(map);
+                    listjson.add(map);
                 } else {
                     String number = null;
                     try {
@@ -65,7 +67,7 @@ public class SearchController {
                             Map<String, String> map = Maps.newHashMap();
                             map.put("type", "block");
                             map.put("value", block.getHash());
-                            list.add(map);
+                            listjson.add(map);
                         }
                     }
                 }
@@ -78,21 +80,38 @@ public class SearchController {
                     Map<String, String> map = Maps.newHashMap();
                     map.put("type", "txn");
                     map.put("value", transaction.getTransactionHash());
-                    list.add(map);
+                    listjson.add(map);
                 }
             }catch(Exception e){}
 
             //添加地址查询
             try{
-                RtTxn rtTxn = rtTxnService.selectOne(new EntityWrapper<RtTxn>().where("`from`={0} or `to` = {1}",searchName,searchName).last("limit 1"));
-                if(rtTxn!=null){
+
+                Contract contract = IContractService.selectContractByAddress(searchName);
+                if (contract != null && !"".equals(contract.getContract())) {
+
                     Map<String, String> map = Maps.newHashMap();
-                    map.put("type", "address");
-                    map.put("value", searchName);
-                    list.add(map);
+                    map.put("type", "token");
+                    map.put("value", contract.getContract());
+                    listjson.add(map);
+
+                } else {
+
+                    RtTxn rtTxn = rtTxnService.selectOne(new EntityWrapper<RtTxn>().where("`from`={0} or `to` = {1}",searchName,searchName).last("limit 1"));
+                    if(rtTxn!=null){
+                        Map<String, String> map = Maps.newHashMap();
+                        map.put("type", "address");
+                        map.put("value", searchName);
+                        listjson.add(map);
+                    }
+
                 }
 
-            }catch(Exception e){}
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
 //            transactionService.
 //
 
@@ -102,7 +121,8 @@ public class SearchController {
 
                 Map<String, Object> params = new HashMap<>();
                 params.put("name",searchName);
-                List<ContractSearchVo> VO = new ArrayList<>();
+//                List<ContractSearchVo> VO = new ArrayList<>();
+                JSONArray VO = new JSONArray();
                 List<ContractSearchVo> contracts = IContractService.selectList(params);
                 List<String> address = rtTxnService.selectListByAddress(searchName);
                 Transaction transaction = transactionService.selectByHash(searchName);
@@ -110,9 +130,12 @@ public class SearchController {
 
 
                 if (block != null) {
-                    ContractSearchVo vo = new ContractSearchVo();
-                    vo.setType("block");
-                    vo.setValue(block.getHash());
+//                    ContractSearchVo vo = new ContractSearchVo();
+                    JSONObject vo = new JSONObject();
+                    vo.put("type","block");
+                    vo.put("value",block.getHash());
+//                    vo.setType("block");
+//                    vo.setValue(block.getHash());
                     VO.add(vo);
                 } else {
                     String number = null;
@@ -123,9 +146,12 @@ public class SearchController {
                     if (StringUtils.isNotBlank(number)) {
                         block = blockService.selectByNumber(number);
                         if (block != null) {
-                            ContractSearchVo vo = new ContractSearchVo();
-                            vo.setType("block");
-                            vo.setValue(block.getHash());
+//                            ContractSearchVo vo = new ContractSearchVo();
+//                            vo.setType("block");
+//                            vo.setValue(block.getHash());
+                            JSONObject vo = new JSONObject();
+                            vo.put("type","block");
+                            vo.put("value",block.getHash());
                             VO.add(vo);
                         }
                     }
@@ -138,37 +164,46 @@ public class SearchController {
                     VO.add(vo);
                 }
 
+                Contract contractInfo = IContractService.selectContractByAddress(searchName);
+                if (contractInfo != null && !"".equals(contractInfo.getContract())) {
+                    JSONObject vo = new JSONObject();
+                    vo.put("type","token");
+                    vo.put("value",contractInfo.getContract());
+                    VO.add(vo);
+                }
+
                 RtTxn rtTxn = rtTxnService.selectOne(new EntityWrapper<RtTxn>().where("`from`={0} or `to` = {1}",searchName,searchName).last("limit 1"));
                 if(rtTxn!=null){
-                    ContractSearchVo vo = new ContractSearchVo();
-                    vo.setType("address");
-                    vo.setValue(searchName);
+                    JSONObject vo = new JSONObject();
+                    vo.put("type","address");
+                    vo.put("value",searchName);
                     VO.add(vo);
                 } else {
                     for(String ad : address){
-                        ContractSearchVo adOV = new ContractSearchVo();
-                        adOV.setType("address");
-                        adOV.setValue(ad);
-                        VO.add(adOV);
+                        JSONObject vo = new JSONObject();
+                        vo.put("type","address");
+                        vo.put("value",ad);
+                        VO.add(vo);
                     }
                 }
 
                 if (contracts != null && contracts.size() > 0) {
 
                     for(ContractSearchVo contract : contracts){
-                        ContractSearchVo adOV = new ContractSearchVo();
-                        adOV.setType("token");
-                        adOV.setValue(JSONObject.toJSONString(contract));
-                        VO.add(adOV);
+                        JSONObject vo = new JSONObject();
+                        vo.put("type","token");
+                        vo.put("value",contract.getContract());
+                        vo.put("name", contract.getName());
+                        vo.put("symbol", contract.getSymbol());
+                        VO.add(vo);
                     }
 
                 }
 
-                Map<String, String> map = Maps.newHashMap();
-                map.put("type", "intelligentQuery");
-                map.put("value", JSONObject.toJSONString(VO));
-                list.add(map);
-
+                JSONObject map = new JSONObject();
+                map.put("type","intelligentQuery");
+                map.put("value",VO);
+                listjson.add(map);
 
             }catch(Exception e){}
 
@@ -177,6 +212,6 @@ public class SearchController {
 
 
 
-        return new JsonResult().addData("related",list);
+        return new JsonResult().addData("related",listjson);
     }
 }

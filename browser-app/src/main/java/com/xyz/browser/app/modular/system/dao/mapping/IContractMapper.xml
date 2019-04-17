@@ -50,6 +50,10 @@
       c_rt_contract crtc LEFT JOIN b_rt_block brb ON brb.number = conv(crtc.block_number,16,10) where token_action = "transfer" and  contract =#{contract} limit #{offset},#{limit}
     </select>
 
+    <select id="selectContractByAddress" parameterType="java.lang.String" resultType="com.xyz.browser.app.modular.system.model.Contract">
+      select contract from c_rt_contract where contract =#{contract} and  token_action="create"
+    </select>
+
     <select id="transfersPageCount" parameterType="map" resultType="long">
       select count(0) FROM c_rt_contract where contract =#{contract} and token_action = "transfer"
     </select>

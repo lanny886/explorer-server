@@ -85,4 +85,9 @@ public class IContractServiceImpl extends ServiceImpl<IContractMapper, Contract>
     public int updateContract(Contract contract) {
         return iContractMapper.updateContract(contract);
     }
+
+    @Override
+    public Contract selectContractByAddress(String contract) {
+        return iContractMapper.selectContractByAddress(contract);
+    }
 }

@@ -18,6 +18,16 @@ public class ContractSearchVo {
 
     private String value;
 
+    public String getContract() {
+        return contract;
+    }
+
+    public void setContract(String contract) {
+        this.contract = contract;
+    }
+
+    private String contract;
+
     public String getValue() {
         return value;
     }
