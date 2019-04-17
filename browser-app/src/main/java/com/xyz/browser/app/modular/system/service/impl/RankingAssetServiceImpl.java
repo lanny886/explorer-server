@@ -22,7 +22,7 @@ public class RankingAssetServiceImpl extends ServiceImpl<RankingAssetMapper, Ran
     private RankingAssetMapper rankingAssetMapper;
 
     @Override
-    public Integer selectRankByAddress(String address) {
+    public int selectRankByAddress(String address) {
         return rankingAssetMapper.selectRankByAddress(address);
     }
 }

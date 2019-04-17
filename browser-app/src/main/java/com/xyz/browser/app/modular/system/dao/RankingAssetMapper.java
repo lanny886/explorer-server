@@ -13,6 +13,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface RankingAssetMapper extends BaseMapper<RankingAsset> {
 
-    Integer selectRankByAddress(String address);
+    int selectRankByAddress(String address);
 
 }
