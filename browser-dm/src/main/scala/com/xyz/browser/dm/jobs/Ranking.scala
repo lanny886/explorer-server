@@ -170,45 +170,13 @@ object Ranking {
       }
     }
     println("req total size:"+list.size)
-    val assetRanking = ss.createDataset(list).toDF("address","asset").orderBy(desc("asset")).head(200)
+    val assetRanking = ss.createDataset(list).toDF("address","asset").orderBy(desc("asset")).collect()
     val ranking_asset = assetRanking.map(f=>{
       val address = f.getAs[String]("address")
       val asset = f.getAs[java.math.BigDecimal]("asset").toString
       Entity.create("s_ranking_asset").set("address",address).set("asset",asset);
     })
 
-//      .groupBy("address").agg(sum("ov").as("ov"))
-//
-//    val in = tts.select("to","value")
-//      .withColumnRenamed("to","address")
-//      .withColumnRenamed("value","iv")
-//      .groupBy("address").agg(sum("iv").as("iv"))
-//
-//    val assetRanking = in.join(out,Seq("address"),"outer").join(blocks,Seq("address"),"outer").join(uncleblocks,Seq("address"),"outer")
-//      .map(f=>{
-//        val address = f.getAs[String]("address")
-//        var ov = f.getAs[java.math.BigDecimal]("ov")
-//        if(ov ==null)
-//          ov = java.math.BigDecimal.ZERO;
-//        var iv = f.getAs[java.math.BigDecimal]("iv")
-//        if(iv ==null)
-//          iv = java.math.BigDecimal.ZERO;
-//        var br = f.getAs[java.math.BigDecimal]("br")
-//        if(br ==null)
-//          br = java.math.BigDecimal.ZERO;
-//        var ur = f.getAs[java.math.BigDecimal]("ur")
-//        if(ur ==null)
-//          ur = java.math.BigDecimal.ZERO;
-//        val asset = iv.subtract(ov).add(br).add(ur)
-//        (address,asset)
-//      }).toDF("address","asset").filter(f=>StringUtils.isNotBlank(f.getAs[String]("address"))).orderBy(desc("asset")).head(100)
-//
-//    val ranking_asset = assetRanking.map(f=>{
-//      val address = f.getAs[String]("address")
-//      val asset = f.getAs[java.math.BigDecimal]("asset").toString
-//      Entity.create("s_ranking_asset").set("address",address).set("asset",asset);
-//    })
-//
     DbUtil.use().execute("truncate table s_ranking_asset")
     DbUtil.use().insert(ranking_asset.toList.asJava)
 

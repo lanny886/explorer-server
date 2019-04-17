@@ -94,18 +94,40 @@ public class StatController extends BaseController {
     public JsonResult rankAsset (@RequestBody PageDto pageDto) {
         BigInteger page = new BigInteger(pageDto.getPage()).subtract(BigInteger.ONE);
         BigInteger limit = new BigInteger(pageDto.getLimit());
+        if(page.intValue()<0 || limit.intValue() > 200){
+            return new JsonResult();
+        }
         BigInteger offset = page.multiply(limit);
-        List<RankingAsset> list = rankingAssetService.selectList(new EntityWrapper<RankingAsset>().orderBy("rank").last("limit "+offset+","+limit));
-        return new JsonResult().addData("ranks",list);
+        EntityWrapper ew = new EntityWrapper<RankingAsset>();
+        int total= rankingAssetService.selectCount(ew);
+        List<RankingAsset> list = rankingAssetService.selectList(ew.orderBy("rank").last("limit "+offset+","+limit));
+        int size ;
+        if(total % limit.intValue() == 0){
+            size = total/limit.intValue();
+        }else{
+            size = total/limit.intValue()+1;
+        }
+        return new JsonResult().addData("ranks",list).addData("total",String.valueOf(total)).addData("size",String.valueOf(size));
     }
 
     @RequestMapping(value = "/rankMiner", method = RequestMethod.POST)
     public JsonResult rankMiner (@RequestBody PageDto pageDto) {
         BigInteger page = new BigInteger(pageDto.getPage()).subtract(BigInteger.ONE);
         BigInteger limit = new BigInteger(pageDto.getLimit());
+        if(page.intValue()<0 || limit.intValue() > 200){
+            return new JsonResult();
+        }
         BigInteger offset = page.multiply(limit);
-        List<RankingMiner> list = rankingMinerService.selectList(new EntityWrapper<RankingMiner>().orderBy("rank").last("limit "+offset+","+limit));
-        return new JsonResult().addData("ranks",list);
+        EntityWrapper ew = new EntityWrapper<RankingAsset>();
+        int total= rankingMinerService.selectCount(ew);
+        List<RankingMiner> list = rankingMinerService.selectList(ew.orderBy("rank").last("limit "+offset+","+limit));
+        int size ;
+        if(total % limit.intValue() == 0){
+            size = total/limit.intValue();
+        }else{
+            size = total/limit.intValue()+1;
+        }
+        return new JsonResult().addData("ranks",list).addData("total",String.valueOf(total)).addData("size",String.valueOf(size));
 
     }
 
