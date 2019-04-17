@@ -33,10 +33,7 @@
       from c_rt_contract crtc
       <where>
           <if test="name != null">
-              name LIKE concat(concat('%',#{name}),'%')
-          </if>
-          <if test="symbol != null">
-              and symbol LIKE concat(concat('%',#{name}),'%')
+              name LIKE concat(concat('%',#{name}),'%') or symbol LIKE concat(concat('%',#{name}),'%')
           </if>
       </where>
     </select>

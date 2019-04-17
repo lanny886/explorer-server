@@ -1,6 +1,6 @@
 package com.xyz.browser.app.modular.hbase.service.impl;
 
-import com.baomidou.mybatisplus.annotations.DataSource;
+import cn.stylefeng.roses.core.mutidatasource.annotion.DataSource;
 import com.xyz.browser.app.core.common.constant.DatasourceEnum;
 import com.xyz.browser.app.modular.hbase.dao.BancorMapper;
 import com.xyz.browser.app.modular.hbase.model.Bancor;

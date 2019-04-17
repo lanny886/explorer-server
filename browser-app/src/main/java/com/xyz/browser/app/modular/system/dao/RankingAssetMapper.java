@@ -15,4 +15,6 @@ public interface RankingAssetMapper extends BaseMapper<RankingAsset> {
 
     int selectRankByAddress(String address);
 
+    String selectCirculation();
+
 }

@@ -15,4 +15,6 @@ public interface IRankingAssetService extends IService<RankingAsset> {
 
     int selectRankByAddress(String address);
 
+    String selectCirculation();
+
 }
