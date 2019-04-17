@@ -24,6 +24,7 @@ public class BancorServiceImpl implements BancorService {
     }
 
     @Override
+    @DataSource(name= DatasourceEnum.DATA_SOURCE_BIZ)
     public List<Bancor> selectBanCor(String name) {
         return bancorMapper.selectBanCor(name);
     }

@@ -45,7 +45,7 @@ public class ContractSheduler {
     @Autowired
     private BancorService bancorService;
 
-    @Scheduled(cron = "30 0/1 * * * *")
+    @Scheduled(cron = "0/5 * * * * ?")
     public void work() {
         self.start();
     }

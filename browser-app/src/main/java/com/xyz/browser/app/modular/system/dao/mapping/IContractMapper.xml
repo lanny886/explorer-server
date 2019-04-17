@@ -36,7 +36,7 @@
               name LIKE concat(concat('%',#{name}),'%')
           </if>
           <if test="symbol != null">
-              and symbol LIKE concat(concat('%',#{symbol}),'%')
+              and symbol LIKE concat(concat('%',#{name}),'%')
           </if>
       </where>
     </select>
