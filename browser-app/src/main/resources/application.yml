@@ -11,6 +11,7 @@ guns:
   scheduler-switch:
     txnTotalCount: false
     daily: false
+    contract: true
   sms:
     accessKey: 123
     secretKey: 123456
@@ -25,7 +26,7 @@ guns:
     domain: http://test.xyz.com
     imgDir: img
   inf:
-    balance: http://localhost:8555/getBalance
+    balance: http://120.27.232.146:8555/getBalance
     total: http://127.0.0.1:8555/getTotal
 beetl:
   resource-auto-check: true       #热加载beetl模板，开发时候用
@@ -48,20 +49,20 @@ spring:
       max-file-size: 100MB
       location: /data/upload_tmp
   mail:
-      # qq
-      host: smtp.qq.com
-      port: 587
-      username: 111111@qq.com
-      password: 111111
-      protocol: smtp
-      default-encoding: UTF-8
-      properties:
-          mail.smtp.auth: true
-          mail.smtp.starttls.enable: true
-          mail.smtp.starttls.required: true
-          mail.smtp.socketFactory.port: 465
-          mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
-          mail.smtp.socketFactory.fallback: false
+    # qq
+    host: smtp.qq.com
+    port: 587
+    username: 450415843@qq.com
+    password: ergslkknutvpcaah
+    protocol: smtp
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.socketFactory.port: 465
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+      mail.smtp.socketFactory.fallback: false
 mybatis-plus:
   typeAliasesPackage: com.xyz.browser.app.modular.system.model
 
@@ -75,14 +76,14 @@ log:
 spring:
   profiles: local
   datasource:
-    url: jdbc:mysql://localhost:3208/browser?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
-    username: 111111
-    password: 111111
+    url: jdbc:mysql://183.129.178.156:3208/browser?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: rds_jiuduo
+    password: changmi890*()
     filters: wall,mergeStat
     db-name: browser
 
 #kafka配置
-BOOTSTRAP_SERVERS_CONFIG: localhost:9092
+BOOTSTRAP_SERVERS_CONFIG: 120.27.232.146:9092
 GROUP_ID_CONFIG: 4
 ENABLE_AUTO_COMMIT_CONFIG: true
 AUTO_COMMIT_INTERVAL_MS_CONFIG: 100
@@ -95,12 +96,12 @@ guns:
   muti-datasource:
     open: true
     driverClassName: org.apache.phoenix.queryserver.client.Driver
-    url: jdbc:phoenix:thin:url=http://localhost:8765;serialization=PROTOBUF
+    url: jdbc:phoenix:thin:url=http://183.129.178.156:8765;serialization=PROTOBUF
     username:
     password:
     dataSourceNames:
-    - dataSourceGuns
-    - dataSourceBiz
+      - dataSourceGuns
+      - dataSourceBiz
 
   scheduler-switch:
     txnTotalCount: false
@@ -108,10 +109,19 @@ guns:
     blockSync: false
     txnStatusSync: false
     keepAlive: false
-    contract: false
+    contrac: true
+#  hbase:
+#    phoenix:
+#      datasource:
+#        driver-class-name: org.apache.phoenix.queryserver.client.Driver
+#        url: jdbc:phoenix:thin:url=http://10.0.0.130:8765;serialization=PROTOBUF
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        username:
+#        password:
+#        default-auto-commit: true
 
 redis:
-  host: localhost
+  host: 120.27.232.146
   port: 6379
   password:
   database: 11
@@ -121,9 +131,9 @@ redis:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://localhost:3208/browser?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
-    username: 111111
-    password: 111111
+    url: jdbc:mysql://10.0.0.130:3208/browser?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: rds_jiuduo
+    password: changmi890*()
     filters: wall,mergeStat
     db-name: browser
 
@@ -133,23 +143,31 @@ guns:
   muti-datasource:
     open: true
     driverClassName: org.apache.phoenix.queryserver.client.Driver
-    url: jdbc:phoenix:thin:url=http://localhost:8765;serialization=PROTOBUF
+    url: jdbc:phoenix:thin:url=http://10.0.0.130:8765;serialization=PROTOBUF
     username:
     password:
     dataSourceNames:
-    - dataSourceGuns
-    - dataSourceBiz
+      - dataSourceGuns
+      - dataSourceBiz
 
   scheduler-switch:
     txnTotalCount: true
     daily: true
     blockSync: true
-    contract: true
+#  hbase:
+#    phoenix:
+#      datasource:
+#        driver-class-name: org.apache.phoenix.queryserver.client.Driver
+#        url: jdbc:phoenix:thin:url=http://10.0.0.130:8765;serialization=PROTOBUF
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        username:
+#        password:
+#        default-auto-commit: true
 
 redis:
-  host: localhost
+  host: 192.168.1.212
   port: 6379
-  password: 111
+  password: changmi
   database: 12
   expiration: 300
 ---
@@ -158,14 +176,15 @@ redis:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://localhost:3208/browser?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
-    username: 111111
-    password: 111111
+    url: jdbc:mysql://183.129.178.156:3208/browser?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: rds_jiuduo
+    password: changmi890*()
     filters: wall,mergeStat
     db-name: browser
 
+
 #kafka配置
-BOOTSTRAP_SERVERS_CONFIG: localhost:9092
+BOOTSTRAP_SERVERS_CONFIG: 120.27.232.146:9092
 GROUP_ID_CONFIG: 4
 ENABLE_AUTO_COMMIT_CONFIG: true
 AUTO_COMMIT_INTERVAL_MS_CONFIG: 100
@@ -178,12 +197,12 @@ guns:
   muti-datasource:
     open: true
     driverClassName: org.apache.phoenix.queryserver.client.Driver
-    url: jdbc:phoenix:thin:url=http://localhost:8765;serialization=PROTOBUF
+    url: jdbc:phoenix:thin:url=http://183.129.178.156:8765;serialization=PROTOBUF
     username:
     password:
     dataSourceNames:
-    - dataSourceGuns
-    - dataSourceBiz
+      - dataSourceGuns
+      - dataSourceBiz
 
   scheduler-switch:
     txnTotalCount: true
@@ -191,10 +210,10 @@ guns:
     blockSync: true
     txnStatusSync: true
     keepAlive: true
-    contract: true
+    contrac: true
 
 redis:
-  host: localhost
+  host: 120.27.232.146
   port: 6379
   password:
   database: 12
@@ -205,26 +224,26 @@ redis:
 spring:
   profiles: produce
   datasource:
-    url: jdbc:mysql://localhost:3208/guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
-    username: 111111
-    password: 111111
+    url: jdbc:mysql://192.168.0.82:3208/guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: root
+    password: changmi890*()
     filters: wall,mergeStat
 redis:
-  host: localhost
+  host: 192.168.0.82
   port: 6289
-  password: 111111
+  password: changmi
   database: 0
   expiration: 300
 guns:
   swagger-open: false              #是否开启swagger (true/false)
   kaptcha-open: true             #是否开启登录时验证码 (true/false)
   muti-datasource:
-      open: true
-      driverClassName: org.apache.phoenix.queryserver.client.Driver
-      url: jdbc:phoenix:thin:url=http://localhost:8765;serialization=PROTOBUF
-      username:
-      password:
-      dataSourceNames:
+    open: true
+    driverClassName: org.apache.phoenix.queryserver.client.Driver
+    url: jdbc:phoenix:thin:url=http://183.129.178.156:8765;serialization=PROTOBUF
+    username:
+    password:
+    dataSourceNames:
       - dataSourceGuns
       - dataSourceBiz
   scheduler-switch:
@@ -233,10 +252,10 @@ guns:
     blockSync: true
     txnStatusSync: true
     keepAlive: true
-    contract: true
+    contrac: true
 
 #kafka配置
-BOOTSTRAP_SERVERS_CONFIG: localhost:9092
+BOOTSTRAP_SERVERS_CONFIG: 120.27.232.146:9092
 GROUP_ID_CONFIG: 4
 ENABLE_AUTO_COMMIT_CONFIG: true
 AUTO_COMMIT_INTERVAL_MS_CONFIG: 100
