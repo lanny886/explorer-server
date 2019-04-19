@@ -18,4 +18,8 @@
       select rank from s_ranking_asset where address = #{address}
     </select>
 
+    <select id="selectCirculation" resultType="java.lang.String">
+      select cast(SUM(asset)as char) as e from s_ranking_asset
+    </select>
+
 </mapper>

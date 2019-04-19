@@ -25,4 +25,9 @@ public class RankingAssetServiceImpl extends ServiceImpl<RankingAssetMapper, Ran
     public int selectRankByAddress(String address) {
         return rankingAssetMapper.selectRankByAddress(address);
     }
+
+    @Override
+    public String selectCirculation() {
+        return rankingAssetMapper.selectCirculation();
+    }
 }
