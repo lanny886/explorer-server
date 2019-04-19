@@ -165,13 +165,5 @@ public class AccountController extends BaseController {
         return new JsonResult().addData("address",addressVo);
     }
 
-    @RequestMapping(value = "/circulation", method = RequestMethod.GET)
-    public JsonResult circulation() {
-
-        String circulation = rankingAssetService.selectCirculation();
-
-        return new JsonResult().addData("circulation",circulation);
-
-    }
 
 }

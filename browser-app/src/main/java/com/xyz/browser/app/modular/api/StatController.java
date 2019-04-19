@@ -83,8 +83,11 @@ public class StatController extends BaseController {
             BeanUtil.copyProperties(list.get(0),summaryVo);
             result.addData(summaryVo);
         }
+        String circulation = rankingAssetService.selectCirculation();
+        result.addData("circulation",circulation);
         return result;
     }
+
     @RequestMapping(value = "/txnDailyRecent", method = RequestMethod.GET)
     public JsonResult txnDailyRecent () {
         List<TxnDaily> list = txnDailyService.selectList(new EntityWrapper<TxnDaily>().orderBy("day",false).last("limit 14"));

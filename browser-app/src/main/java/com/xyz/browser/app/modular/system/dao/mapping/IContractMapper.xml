@@ -28,6 +28,10 @@
       from c_rt_contract crtc limit #{offset},#{limit}
     </select>
 
+    <select id="contractLists">
+     select distinct contract FROM  c_rt_contract
+    </select>
+
     <select id="selectList" parameterType="map" resultType="com.xyz.browser.app.modular.api.vo.ContractSearchVo">
      select distinct crtc.contract, crtc.name, crtc.symbol, "address" as type
       from c_rt_contract crtc
@@ -56,7 +60,7 @@
     </select>
 
     <select id="info" parameterType="java.lang.String" resultType="com.xyz.browser.app.modular.api.vo.ContractInfoVo">
-            select (SELECT total FROM c_rt_contract where contract =#{contract} AND token_action= "create") total,
+            select (SELECT cast(total/power(10,`decimal`)as char) as total FROM c_rt_contract where contract =#{contract} AND token_action= "create") total,
               (select count(DISTINCT `from`) from (
             (SELECT distinct `from` FROM c_rt_contract where contract =#{contract}
             UNION  ALL

@@ -27,34 +27,37 @@ public class ContractSheduler {
     @Autowired
     private BancorService bancorService;
 
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void work() {
         self.start();
     }
+
     @TimeStat
     public void start(){
 
         try {
-            List<Bancor> bancorList = bancorService.selectBanCor("smartToken");
+//            List<Bancor> bancorList = bancorService.selectBanCor("smartToken");
 
-            for (Bancor bancor : bancorList) {
+//            for (Bancor bancor : bancorList) {
 
-                String total = iContractService.getTotal(bancor.getContract());
+            List<String> ContractList = iContractService.contractList();
+
+            for (String contractInfo : ContractList) {
+
+                String total = iContractService.getTotal(contractInfo);
 
                 Contract contract = new Contract();
                 contract.setTokenAction("create");
-                contract.setContract(bancor.getContract());
+                contract.setContract(contractInfo);
                 contract.setTotal(total);
                 iContractService.updateContract(contract);
-
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
     }
-
 
 }
