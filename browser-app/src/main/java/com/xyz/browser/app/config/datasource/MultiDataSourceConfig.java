@@ -99,10 +99,10 @@ public class MultiDataSourceConfig {
         dataSource.clearFilters();
         //phoenix
         //avatica.statementcache.expiryduration:180 min
-//        dataSource.setMinEvictableIdleTimeMillis(1800000);//30 min
-        dataSource.setMaxEvictableIdleTimeMillis(3600000);//60 min
+        dataSource.setMinEvictableIdleTimeMillis(60000);//1 min
+        dataSource.setMaxEvictableIdleTimeMillis(300000);//5 min
         dataSource.setRemoveAbandoned(true);
-        dataSource.setRemoveAbandonedTimeoutMillis(7200000);//120 min
+        dataSource.setRemoveAbandonedTimeoutMillis(600000);//10 min
         return dataSource;
     }
 
