@@ -123,7 +123,7 @@ object Holders {
       if(total == null)
         total = java.math.BigDecimal.ZERO;
 
-      val percentage = asset.divide(total).multiply(new java.math.BigDecimal("10"))
+      val percentage = asset.divide(total).multiply(new java.math.BigDecimal("100"))
 
       (contract,address,asset,percentage)
 
