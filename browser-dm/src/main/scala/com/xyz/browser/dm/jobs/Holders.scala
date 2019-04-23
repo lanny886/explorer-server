@@ -1,6 +1,8 @@
 package com.xyz.browser.dm.jobs
 
 
+import java.math.RoundingMode
+
 import cn.hutool.db.{DbUtil, Entity}
 import cn.hutool.setting.Setting
 import org.apache.spark.sql.SparkSession
@@ -120,7 +122,7 @@ object Holders {
       if(asset == null)
         asset = java.math.BigDecimal.ZERO;
       if(total != null) {
-        percentage = asset.divide(total).multiply(new java.math.BigDecimal("100"))
+        percentage = asset.divide(total, 6, RoundingMode.HALF_UP).multiply(new java.math.BigDecimal("100"))
       }
 
       (contract,address,asset,percentage)
