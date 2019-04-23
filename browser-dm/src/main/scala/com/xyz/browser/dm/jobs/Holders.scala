@@ -5,6 +5,7 @@ import java.math.RoundingMode
 
 import cn.hutool.db.{DbUtil, Entity}
 import cn.hutool.setting.Setting
+import org.apache.commons.lang3.StringUtils
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.spark.storage.StorageLevel
@@ -60,7 +61,7 @@ object Holders {
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("from")
       val to = f.getAs[String]("to")
-      val total = new java.math.BigDecimal(f.getAs[String]("total"))
+      val total = f.getAs[String]("total")
       val contract = f.getAs[String]("contract")
       if (tokenAction.equals("transfer")) {
         (contract, from, to, total, tokenAction)
@@ -76,7 +77,7 @@ object Holders {
 
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("from")
-      val total = new java.math.BigDecimal(f.getAs[String]("total"))
+      val total = f.getAs[String]("total")
       val contract = f.getAs[String]("contract")
       if (tokenAction.equals("create")) {
         (contract, from, total)
@@ -89,23 +90,69 @@ object Holders {
 
     createMap.persist(StorageLevel.MEMORY_AND_DISK)
 
-    val from = transferMap.select("contract","from","total").withColumnRenamed("from","address").groupBy("address","contract").agg(sum("total").as("fromTotal"))
+    val from = transferMap.select("contract","from","total").withColumnRenamed("from","address")
+          .rdd.map(f=>{
+        val contract = f.getAs[String]("contract")
+        val address = f.getAs[String]("address")
+        val total = new java.math.BigDecimal(f.getAs[String]("total"))
+        println("fs:"+address+","+contract+","+total)
+        ((address,contract),total)
 
-    val to = transferMap.select("contract","to","total").withColumnRenamed("to","address").groupBy("address","contract").agg(sum("total").as("toTotal"))
+      })
+        .reduceByKey((a,b)=>{
+          a.add(b)
+        }).map(f=>{
+        val fromTotal = f._2
+        if(fromTotal.precision>38){
+          println("from:"+f._1._1+","+f._1._2+","+f._2)
+        }
+      (f._1._1,f._1._2,f._2.toString)
+      }).toDF("address","contract","fromTotal")//.collect()
+//      .groupBy("address","contract").agg(sum("total").as("fromTotal"))
+
+    val to = transferMap.select("contract","to","total").withColumnRenamed("to","address")
+      .rdd.map(f=>{
+      val contract = f.getAs[String]("contract")
+      val address = f.getAs[String]("address")
+      val total = new java.math.BigDecimal(f.getAs[String]("total"))
+      println("ts:"+address+","+contract+","+total)
+      ((address,contract),total)
+
+    })
+      .reduceByKey((a,b)=>{
+        a.add(b)
+      }).map(f=>{
+      val toTotal = f._2
+      if(toTotal.precision>38){
+        println("to:"+f._1._1+","+f._1._2+","+f._2)
+      }
+      (f._1._1,f._1._2,f._2.toString)
+    }).toDF("address","contract","toTotal")
+
+
+
+
+//      .groupBy("address","contract").agg(sum("total").as("toTotal"))
 
 
     val addressAsset = from.join(to,Seq("address","contract"),"outer").map(f=>{
       val contract = f.getAs[String]("contract")
       val address = f.getAs[String]("address")
-      var fromTotal = f.getAs[java.math.BigDecimal]("fromTotal")
-      var toTotal = f.getAs[java.math.BigDecimal]("toTotal")
 
-      if(fromTotal == null)
-        fromTotal = java.math.BigDecimal.ZERO;
-      if(toTotal == null)
-        toTotal = java.math.BigDecimal.ZERO;
+      var fromTotalStr = f.getAs[String]("fromTotal")
+      var toTotalStr = f.getAs[String]("toTotal")
+      val fromTotal =
+      if(StringUtils.isBlank(fromTotalStr))
+        java.math.BigDecimal.ZERO
+      else
+        new java.math.BigDecimal(fromTotalStr)
+      val toTotal =
+      if(StringUtils.isBlank(toTotalStr))
+        java.math.BigDecimal.ZERO;
+      else
+        new java.math.BigDecimal(toTotalStr)
       val asset = fromTotal.subtract(toTotal).abs()
-      (contract,address,asset)
+      (contract,address,asset.toString)
     }).toDF("contract", "address", "asset")
 
     addressAsset.persist(StorageLevel.MEMORY_AND_DISK)
@@ -114,18 +161,22 @@ object Holders {
 
       val contract = f.getAs[String]("contract")
       val address = f.getAs[String]("address")
-      var asset = f.getAs[java.math.BigDecimal]("asset")
-      var total = f.getAs[java.math.BigDecimal]("total")
+      var assetStr = f.getAs[String]("asset")
+      var totalStr = f.getAs[String]("total")
 
-      var percentage = new java.math.BigDecimal("0.0")
-
-      if(asset == null)
-        asset = java.math.BigDecimal.ZERO;
-      if(total != null) {
-        percentage = asset.divide(total, 6, RoundingMode.HALF_UP).multiply(new java.math.BigDecimal("100"))
+      var percentage = java.math.BigDecimal.ZERO
+      val asset =
+      if(StringUtils.isBlank(assetStr))
+        java.math.BigDecimal.ZERO
+      else
+        new java.math.BigDecimal(assetStr)
+      if(StringUtils.isNotBlank(totalStr) ) {
+        var total = new java.math.BigDecimal(totalStr)
+        if(total.compareTo(java.math.BigDecimal.ZERO)!=0)
+          percentage = asset.divide(total, 6, RoundingMode.HALF_UP).multiply(new java.math.BigDecimal("100"))
       }
 
-      (contract,address,asset,percentage)
+      (contract,address,asset.toString,percentage.toString)
 
     }).toDF("contract","address","asset","percentage").collect()
 
@@ -134,8 +185,8 @@ object Holders {
     val holders_asset = statistics.map(f=>{
       val contract = f.getAs[String]("contract")
       val address = f.getAs[String]("address")
-      val asset = f.getAs[java.math.BigDecimal]("asset").toString
-      val percentage = f.getAs[java.math.BigDecimal]("percentage").toString
+      val asset = f.getAs[String]("asset").toString
+      val percentage = f.getAs[String]("percentage").toString
       Entity.create("s_holders_asset").set("contract",contract).set("address",address).set("asset",asset).set("percentage",percentage)
     })
 
