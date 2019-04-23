@@ -89,9 +89,9 @@ object Holders {
 
     createMap.persist(StorageLevel.MEMORY_AND_DISK)
 
-    val from = transferMap.select("contract","from","total").withColumnRenamed("from","address").groupBy("address").agg(sum("total").as("fromTotal"))
+    val from = transferMap.select("contract","from","total").withColumnRenamed("from","address").groupBy("address","contract").agg(sum("total").as("fromTotal"))
 
-    val to = transferMap.select("contract","to","total").withColumnRenamed("to","address").groupBy("address").agg(sum("total").as("toTotal"))
+    val to = transferMap.select("contract","to","total").withColumnRenamed("to","address").groupBy("address","contract").agg(sum("total").as("toTotal"))
 
 
     val addressAsset = from.join(to,Seq("address","contract"),"outer").map(f=>{
@@ -114,7 +114,6 @@ object Holders {
 
       val contract = f.getAs[String]("contract")
       val address = f.getAs[String]("address")
-      val createAddress = f.getAs[String]("createAddress")
       var asset = f.getAs[java.math.BigDecimal]("asset")
       var total = f.getAs[java.math.BigDecimal]("total")
 
@@ -128,6 +127,7 @@ object Holders {
       (contract,address,asset,percentage)
 
     }).toDF("contract","address","asset","percentage").collect()
+
 
 
     val holders_asset = statistics.map(f=>{
