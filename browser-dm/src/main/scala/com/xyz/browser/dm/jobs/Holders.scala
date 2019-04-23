@@ -50,25 +50,20 @@ object Holders {
       val to = f.getAs[String]("tto")
       val total = f.getAs[String]("total")
       val contract = f.getAs[String]("contract")
-      val decimal = f.getAs[String]("decimal")
-      (contract, from, to, total, tokenAction, decimal)
-    }).toDF("contract","from","to","total","tokenAction","decimal")
+      (contract, from, to, total, tokenAction)
+    }).toDF("contract","from","to","total","tokenAction")
 
     ct.persist(StorageLevel.MEMORY_AND_DISK)
 
-    val transferMap = ct.select("tokenAction","from", "to", "total", "contract", "decimal").rdd.map(f=>{
+    val transferMap = ct.select("tokenAction","from", "to", "total", "contract").rdd.map(f=>{
 
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("from")
       val to = f.getAs[String]("to")
-      val decimal = f.getAs[Int]("decimal")
       val total = new java.math.BigDecimal(f.getAs[String]("total"))
       val contract = f.getAs[String]("contract")
-
-      val pow = java.lang.Math.pow(10,decimal)
-
       if (tokenAction.equals("transfer")) {
-        (contract, from, to, total.divide(new java.math.BigDecimal(pow)), tokenAction)
+        (contract, from, to, total, tokenAction)
       } else{
         null
       }
@@ -124,20 +119,23 @@ object Holders {
 
       var percentage = new java.math.BigDecimal("0.0")
 
-      if(asset != null && total != null) {
+      if(asset == null)
+        asset = java.math.BigDecimal.ZERO;
+      if(total != null) {
         percentage = asset.divide(total, 6, RoundingMode.HALF_UP).multiply(new java.math.BigDecimal("100"))
       }
 
-      (contract,address,asset,percentage.toString)
+      (contract,address,asset,percentage)
 
-    }).collect()
+    }).toDF("contract","address","asset","percentage").collect()
+
 
 
     val holders_asset = statistics.map(f=>{
-      val contract = f._1
-      val address = f._2
-      val asset = f._3
-      val percentage = f._4
+      val contract = f.getAs[String]("contract")
+      val address = f.getAs[String]("address")
+      val asset = f.getAs[java.math.BigDecimal]("asset").toString
+      val percentage = f.getAs[java.math.BigDecimal]("percentage").toString
       Entity.create("s_holders_asset").set("contract",contract).set("address",address).set("asset",asset).set("percentage",percentage)
     })
 
