@@ -50,20 +50,25 @@ object Holders {
       val to = f.getAs[String]("tto")
       val total = f.getAs[String]("total")
       val contract = f.getAs[String]("contract")
-      (contract, from, to, total, tokenAction)
-    }).toDF("contract","from","to","total","tokenAction")
+      val decimal = f.getAs[String]("decimal")
+      (contract, from, to, total, tokenAction, decimal)
+    }).toDF("contract","from","to","total","tokenAction","decimal")
 
     ct.persist(StorageLevel.MEMORY_AND_DISK)
 
-    val transferMap = ct.select("tokenAction","from", "to", "total", "contract").rdd.map(f=>{
+    val transferMap = ct.select("tokenAction","from", "to", "total", "contract", "decimal").rdd.map(f=>{
 
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("from")
       val to = f.getAs[String]("to")
+      val decimal = f.getAs[Int]("decimal")
       val total = new java.math.BigDecimal(f.getAs[String]("total"))
       val contract = f.getAs[String]("contract")
+
+      val pow = java.lang.Math.pow(10,decimal)
+
       if (tokenAction.equals("transfer")) {
-        (contract, from, to, total, tokenAction)
+        (contract, from, to, total.divide(new java.math.BigDecimal(pow)), tokenAction)
       } else{
         null
       }
