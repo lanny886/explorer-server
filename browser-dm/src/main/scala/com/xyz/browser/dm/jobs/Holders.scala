@@ -58,7 +58,7 @@ object Holders {
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("from")
       val to = f.getAs[String]("to")
-      val total = f.getAs[String]("total")
+      val total = new java.math.BigDecimal(f.getAs[String]("total"))
       val contract = f.getAs[String]("contract")
       if (tokenAction.equals("transfer")) {
         (contract, from, to, total, tokenAction)
@@ -74,7 +74,7 @@ object Holders {
 
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("from")
-      val total = f.getAs[String]("total")
+      val total = new java.math.BigDecimal(f.getAs[String]("total"))
       val contract = f.getAs[String]("contract")
       if (tokenAction.equals("create")) {
         (contract, from, total)
