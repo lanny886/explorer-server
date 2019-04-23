@@ -1,8 +1,6 @@
 package com.xyz.browser.dm.jobs
 
 
-import java.math.BigDecimal
-
 import cn.hutool.db.{DbUtil, Entity}
 import cn.hutool.setting.Setting
 import org.apache.spark.sql.SparkSession
@@ -48,7 +46,7 @@ object Holders {
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("tfrom")
       val to = f.getAs[String]("tto")
-      val total = f.getAs[BigDecimal]("total")
+      val total = f.getAs[String]("total")
       val contract = f.getAs[String]("contract")
       (contract, from, to, total, tokenAction)
     }).toDF("contract","from","to","total","tokenAction")
@@ -60,7 +58,7 @@ object Holders {
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("from")
       val to = f.getAs[String]("to")
-      val total = f.getAs[BigDecimal]("total")
+      val total = f.getAs[String]("total")
       val contract = f.getAs[String]("contract")
       if (tokenAction.equals("transfer")) {
         (contract, from, to, total, tokenAction)
@@ -76,7 +74,7 @@ object Holders {
 
       val tokenAction = f.getAs[String]("tokenAction")
       val from = f.getAs[String]("from")
-      val total = f.getAs[BigDecimal]("total")
+      val total = f.getAs[String]("total")
       val contract = f.getAs[String]("contract")
       if (tokenAction.equals("create")) {
         (contract, from, total)
