@@ -119,23 +119,20 @@ object Holders {
 
       var percentage = new java.math.BigDecimal("0.0")
 
-      if(asset == null)
-        asset = java.math.BigDecimal.ZERO;
-      if(total != null) {
+      if(asset != null && total != null) {
         percentage = asset.divide(total, 6, RoundingMode.HALF_UP).multiply(new java.math.BigDecimal("100"))
       }
 
-      (contract,address,asset,percentage)
+      (contract,address,asset,percentage.toString)
 
-    }).toDF("contract","address","asset","percentage").collect()
-
+    }).collect()
 
 
     val holders_asset = statistics.map(f=>{
-      val contract = f.getAs[String]("contract")
-      val address = f.getAs[String]("address")
-      val asset = f.getAs[java.math.BigDecimal]("asset").toString
-      val percentage = f.getAs[java.math.BigDecimal]("percentage").toString
+      val contract = f._1
+      val address = f._2
+      val asset = f._3
+      val percentage = f._4
       Entity.create("s_holders_asset").set("contract",contract).set("address",address).set("asset",asset).set("percentage",percentage)
     })
 
