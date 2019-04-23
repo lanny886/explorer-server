@@ -115,12 +115,13 @@ object Holders {
       var asset = f.getAs[java.math.BigDecimal]("asset")
       var total = f.getAs[java.math.BigDecimal]("total")
 
+      var percentage = new java.math.BigDecimal("0.0")
+
       if(asset == null)
         asset = java.math.BigDecimal.ZERO;
-      if(total == null)
-        total = java.math.BigDecimal.ZERO;
-
-      val percentage = asset.divide(total).multiply(new java.math.BigDecimal("100"))
+      if(total != null) {
+        percentage = asset.divide(total).multiply(new java.math.BigDecimal("100"))
+      }
 
       (contract,address,asset,percentage)
 
