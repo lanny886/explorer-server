@@ -92,7 +92,7 @@ public class IContractServiceImpl extends ServiceImpl<IContractMapper, Contract>
     }
 
     @Override
-    public List<String> contractList() {
+    public List<Contract> contractList() {
         return iContractMapper.contractLists();
     }
 }

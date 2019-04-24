@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -19,6 +20,12 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public List<Contract> selectAllList() {
         return contractMapper.selectAllList();
+    }
+
+    @Override
+    @DataSource(name= DatasourceEnum.DATA_SOURCE_BIZ)
+    public int updateContractTotal(Map<String, String> map) {
+        return contractMapper.updateContractTotal(map);
     }
 
 

@@ -28,8 +28,8 @@
       from c_rt_contract crtc limit #{offset},#{limit}
     </select>
 
-    <select id="contractLists" resultType="java.lang.String">
-     select distinct contract FROM  c_rt_contract
+    <select id="contractLists" resultType="com.xyz.browser.app.modular.system.model.Contract">
+     select distinct contract, hash FROM  c_rt_contract
     </select>
 
     <select id="selectList" parameterType="map" resultType="com.xyz.browser.app.modular.api.vo.ContractSearchVo">

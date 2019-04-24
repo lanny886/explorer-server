@@ -3,15 +3,18 @@ package com.xyz.browser.app.modular.system.scheduler;
 import com.xyz.browser.app.core.common.annotion.TimeStat;
 import com.xyz.browser.app.modular.hbase.model.Bancor;
 import com.xyz.browser.app.modular.hbase.service.BancorService;
+import com.xyz.browser.app.modular.hbase.service.ContractService;
 import com.xyz.browser.app.modular.system.model.Contract;
 import com.xyz.browser.app.modular.system.service.IContractService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @ConditionalOnProperty(prefix = "guns.scheduler-switch", name = "contract", havingValue = "true")
@@ -27,7 +30,10 @@ public class ContractSheduler {
     @Autowired
     private BancorService bancorService;
 
-    @Scheduled(cron = "0 0 * * * ?")
+    @Autowired
+    private ContractService contractService;
+
+    @Scheduled(cron = "0 0 0/1 * * ?")
     public void work() {
         self.start();
     }
@@ -40,17 +46,26 @@ public class ContractSheduler {
 
 //            for (Bancor bancor : bancorList) {
 
-            List<String> ContractList = iContractService.contractList();
+            List<Contract> ContractList = iContractService.contractList();
 
-            for (String contractInfo : ContractList) {
+            for (Contract contractInfo : ContractList) {
 
-                String total = iContractService.getTotal(contractInfo);
+                String total = iContractService.getTotal(contractInfo.getContract());
 
                 Contract contract = new Contract();
                 contract.setTokenAction("create");
-                contract.setContract(contractInfo);
+                contract.setContract(contractInfo.getContract());
                 contract.setTotal(total);
                 iContractService.updateContract(contract);
+
+
+                Map<String, String> map = new HashedMap();
+                map.put("tokenAction", "create");
+                map.put("contract", contractInfo.getContract());
+                map.put("total",total);
+                map.put("hash",contractInfo.getHash());
+                contractService.updateContractTotal(map);
+
             }
 
 
