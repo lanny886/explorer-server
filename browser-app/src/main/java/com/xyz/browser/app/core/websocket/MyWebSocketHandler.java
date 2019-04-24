@@ -34,6 +34,9 @@ public class MyWebSocketHandler extends Object implements WebSocketHandler {
     static {
         users = new ConcurrentHashMap();
     }
+    public static boolean checkClient(String clientId){
+        return users.containsKey(clientId);
+    }
     //新增socket
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
