@@ -104,7 +104,7 @@ object Holders {
         fromTotal = java.math.BigDecimal.ZERO;
       if(toTotal == null)
         toTotal = java.math.BigDecimal.ZERO;
-      val asset = fromTotal.subtract(toTotal).abs()
+      val asset = toTotal.subtract(fromTotal).abs()
       (contract,address,asset)
     }).toDF("contract", "address", "asset")
 
