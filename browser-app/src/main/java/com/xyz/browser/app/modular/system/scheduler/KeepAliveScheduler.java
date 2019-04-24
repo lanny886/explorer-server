@@ -14,6 +14,7 @@ import com.xyz.browser.app.core.mail.MailService;
 import com.xyz.browser.app.core.redission.DistributedRedisLock;
 import com.xyz.browser.app.core.redission.RedisLockConstant;
 import com.xyz.browser.app.core.sms.CommonConstant;
+import com.xyz.browser.app.core.websocket.MyWebSocketHandler;
 import com.xyz.browser.app.modular.hbase.model.Block;
 import com.xyz.browser.app.modular.hbase.model.BlockSync;
 import com.xyz.browser.app.modular.hbase.service.BlockService;
@@ -32,6 +33,7 @@ import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -81,6 +83,9 @@ public class KeepAliveScheduler {
 
     @Autowired
     private MailService mailService;
+    @Value("${guns.ws.ssClientId}")
+    private String ssClientId;
+
     //@TimeStat
     @Scheduled(cron = "10 0/1 * * * *")
     public void work() {
@@ -88,20 +93,16 @@ public class KeepAliveScheduler {
     }
     @TimeStat
     public void start(){
-        RtBlock rtBlock = rtBlockService.selectOne(new EntityWrapper<RtBlock>().orderBy("number",false).last("limit 1"));
-        if(rtBlock!=null){
-            long t = Long.valueOf(rtBlock.getT()+"000");
-            long now = System.currentTimeMillis();
-            if ((now - t)/(1000*60) > 10){
-                String status = (String)redisTemplate.opsForValue().get(CacheKey.KEY_KEEP_ALIVE);
-                if(StringUtils.isBlank(status) || "1".equals(status)){
-                    redisTemplate.opsForValue().set(CacheKey.KEY_KEEP_ALIVE,"0",1, TimeUnit.DAYS);
-                    //notify
-                    mailService.send("lanny886@139.com",MailService.SUBJECT_KEEP_ALIVE,"lastBlock:"+rtBlock.getNumber()+" t:"+t);
-                }
-            }else{
-                redisTemplate.opsForValue().set(CacheKey.KEY_KEEP_ALIVE,"1");
+        boolean wsFlag = MyWebSocketHandler.checkClient(ssClientId);
+        if (!wsFlag){
+            String status = (String)redisTemplate.opsForValue().get(CacheKey.KEY_KEEP_ALIVE);
+            if(StringUtils.isBlank(status) || "1".equals(status)){
+                redisTemplate.opsForValue().set(CacheKey.KEY_KEEP_ALIVE,"0",1, TimeUnit.DAYS);
+                //notify
+                mailService.send("lanny886@139.com",MailService.SUBJECT_KEEP_ALIVE,"ssWs disconnect");
             }
+        }else{
+            redisTemplate.opsForValue().set(CacheKey.KEY_KEEP_ALIVE,"1");
         }
 
     }

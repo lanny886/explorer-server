@@ -28,6 +28,8 @@ guns:
   inf:
     balance: http://localst:8555/getBalance
     total: http://127.0.0.1:8555/getTotal
+  ws:
+    ssClientId: HC_QNEiCSA
 beetl:
   resource-auto-check: true       #热加载beetl模板，开发时候用
 
