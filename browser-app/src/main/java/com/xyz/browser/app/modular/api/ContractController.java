@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.xyz.browser.app.core.util.JsonResult;
+import com.xyz.browser.app.modular.api.dto.HoldersPageDto;
 import com.xyz.browser.app.modular.api.dto.PageDto;
 import com.xyz.browser.app.modular.api.dto.TransfersPageDto;
 import com.xyz.browser.app.modular.api.vo.ContractInfoVo;
@@ -13,6 +14,8 @@ import com.xyz.browser.app.modular.api.vo.ContractPageVo;
 import com.xyz.browser.app.modular.api.vo.ContractTransfersVo;
 import com.xyz.browser.app.modular.hbase.service.ContractService;
 import com.xyz.browser.app.modular.system.model.Contract;
+import com.xyz.browser.app.modular.system.model.Holders;
+import com.xyz.browser.app.modular.system.service.HoldersService;
 import com.xyz.browser.app.modular.system.service.IContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,9 @@ public class ContractController {
 
     @Autowired
     private IContractService iContractService;
+
+    @Autowired
+    private HoldersService holdersService;
 
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
@@ -115,6 +121,28 @@ public class ContractController {
 
     }
 
+
+    @RequestMapping(value = "/holderList", method = RequestMethod.POST)
+    public JsonResult holderList(@RequestBody HoldersPageDto holdersPageDto) {
+
+        BigInteger page = new BigInteger(holdersPageDto.getPage()).subtract(BigInteger.ONE);
+        BigInteger limit = new BigInteger(holdersPageDto.getLimit());
+        BigInteger offset = page.multiply(limit);
+        Map<String,Object> params = Maps.newHashMap();
+        params.put("contract",holdersPageDto.getContract());
+        params.put("offset",offset.longValue());
+        params.put("limit",limit.intValue());
+        long total = holdersService.pageCount(params);
+        List<Holders> holderList = holdersService.pageList(params);
+        long size ;
+        if(total % limit.intValue() == 0){
+            size = total/limit.intValue();
+        }else{
+            size = total/limit.intValue()+1;
+        }
+
+        return new JsonResult().addData("holderList",holderList).addData("total",String.valueOf(total)).addData("size",String.valueOf(size));
+    }
 
 
 }

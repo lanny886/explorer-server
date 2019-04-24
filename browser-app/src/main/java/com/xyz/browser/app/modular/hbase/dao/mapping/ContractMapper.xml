@@ -24,4 +24,8 @@
     </select>
 
 
+    <update id="updateContractTotal" parameterType="java.util.Map">
+       upsert into vns.contract(hash,total,contract,tokenAction) values (#{hash},#{total},#{contract},#{tokenAction})
+    </update>
+
 </mapper>

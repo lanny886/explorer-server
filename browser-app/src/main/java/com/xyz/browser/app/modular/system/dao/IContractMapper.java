@@ -28,5 +28,5 @@ public interface IContractMapper extends BaseMapper<Contract> {
 
     Contract selectContractByAddress(String contract);
 
-    List<String> contractLists();
+    List<Contract> contractLists();
 }

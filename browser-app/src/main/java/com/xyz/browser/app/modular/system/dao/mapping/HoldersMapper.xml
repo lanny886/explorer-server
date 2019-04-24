@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyz.browser.app.modular.system.dao.HoldersMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xyz.browser.app.modular.system.model.Holders">
+        <id column="address" property="address" />
+        <result column="contract" property="contract" />
+        <result column="asset" property="asset" />
+        <result column="percentage" property="percentage" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       address,contract,asset,percentage
+    </sql>
+
+    <select id="pageList" parameterType="map" resultType="com.xyz.browser.app.modular.system.model.Holders">
+     select * FROM s_holders_asset where contract =#{contract} limit #{offset},#{limit}
+    </select>
+
+    <select id="pageCount" parameterType="map" resultType="long">
+      select count(0) from s_holders_asset where contract =#{contract}
+    </select>
+
+</mapper>
