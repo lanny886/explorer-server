@@ -66,10 +66,10 @@ object Holders {
       if (tokenAction.equals("transfer")) {
         (contract, from, to, total, tokenAction)
       } else{
-        null
+        (contract, null, from, total, "transfer")
       }
 
-    }).filter(f=>f!=null).toDF("contract","from","to","total","tokenAction")
+    }).toDF("contract","from","to","total","tokenAction")
 
     transferMap.persist(StorageLevel.MEMORY_AND_DISK)
 
@@ -96,9 +96,15 @@ object Holders {
       val address = f.getAs[String]("address")
       val total = new java.math.BigDecimal(f.getAs[String]("total"))
       println("fs:"+address+","+contract+","+total)
-      ((address,contract),total)
 
-    })
+      if (address !=null) {
+        ((address,contract),total)
+      } else {
+        null
+      }
+
+
+    }).filter(f=>f!=null)
       .reduceByKey((a,b)=>{
         a.add(b)
       }).map(f=>{
@@ -151,7 +157,7 @@ object Holders {
           java.math.BigDecimal.ZERO;
         else
           new java.math.BigDecimal(toTotalStr)
-      val asset = toTotal.subtract(fromTotal).abs()
+      val asset = fromTotal.subtract(toTotal).abs()
       (contract,address,asset.toString)
     }).toDF("contract", "address", "asset")
 
