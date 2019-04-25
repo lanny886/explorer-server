@@ -12,7 +12,6 @@ import com.xyz.browser.app.modular.api.dto.TransfersPageDto;
 import com.xyz.browser.app.modular.api.vo.ContractInfoVo;
 import com.xyz.browser.app.modular.api.vo.ContractPageVo;
 import com.xyz.browser.app.modular.api.vo.ContractTransfersVo;
-import com.xyz.browser.app.modular.hbase.service.ContractService;
 import com.xyz.browser.app.modular.system.model.Contract;
 import com.xyz.browser.app.modular.system.model.Holders;
 import com.xyz.browser.app.modular.system.service.HoldersService;
