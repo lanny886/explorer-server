@@ -32,11 +32,11 @@ public class CheckLost {
         // like java.lang.AssertionError: assertion failed: Failed to get records for spark-executor-kafka_consumer_browser VNS 0 5293938 after polling for 10000
         //
 //        1686041
-        long offsetStart=41143;//(include)
-        long offsetEnd=41162;//(exclude)
+        long offsetStart=211732;//(include)
+        long offsetEnd=211752;//(exclude)
 
         //Kafka consumer configuration settings
-        String topicName = kafka_setting.getStr("topic");
+        String topicName = kafka_setting.getStr("topicVns");
         String bootstrap_servers=kafka_setting.getStr("bootstrapServers");
         Properties props = new Properties();
 
@@ -80,10 +80,11 @@ public class CheckLost {
                         String hash= resultObj.getString("transactionHash");
                         System.out.println(record.offset()+",txn block:"+new BigInteger(number.substring(2),16).toString()+","+hash);
                     }
-                }else{
-                    if(obj.containsKey("contract"))//contract
-                        System.out.println(record.offset()+",contract");
                 }
+//                else{
+//                    if(obj.containsKey("contract"))//contract
+//                        System.out.println(record.offset()+",contract");
+//                }
 
             }
         }
