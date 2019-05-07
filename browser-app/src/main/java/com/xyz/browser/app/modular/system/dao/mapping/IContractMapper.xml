@@ -29,7 +29,7 @@
     </select>
 
     <select id="contractLists" resultType="com.xyz.browser.app.modular.system.model.Contract">
-     select distinct contract, hash FROM  c_rt_contract
+     select distinct contract, hash FROM  c_rt_contract where  token_action="create"
     </select>
 
     <select id="selectList" parameterType="map" resultType="com.xyz.browser.app.modular.api.vo.ContractSearchVo">
